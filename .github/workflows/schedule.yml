@@ -23,6 +23,9 @@ jobs:
     - name: Install dependencies
       run: |
         for i in 1 2 3; do pip install -r requirements.txt && break || sleep 10; done
+    
+    - name: Check Internet Connection
+        run: curl -I https://example.com
 
     - name: Run Scraper
       run: python main.py
