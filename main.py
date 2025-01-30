@@ -1,91 +1,137 @@
-import os
-import pandas as pd
 import time
-from datetime import datetime
+import random
+import requests
+import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
-from fake_useragent import UserAgent
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
-# Constants
-DATA_FILE = "job_data.csv"
-BASE_URL = "https://example-job-board.com"  # Replace with the actual website URL
+# ---------------------------
+# CONFIGURATION
+# ---------------------------
+BASE_URL = "https://jobs.rwfm.tamu.edu/search/"  # Update with actual job listing URL
+PROXY_LIST_URL = "https://www.free-proxy-list.net/"  # Free proxy provider
+OUTPUT_FILE = "job_data.csv"
 
-# Configure Selenium with headless mode and random user-agent
-options = Options()
-options.add_argument("--headless")  # Run without opening a browser
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-shm-usage")
-options.add_argument(f"user-agent={UserAgent().random}")
+# ---------------------------
+# FUNCTION TO GET FREE PROXIES
+# ---------------------------
+def get_proxies():
+    """Scrapes a list of free proxies from the internet."""
+    response = requests.get(PROXY_LIST_URL)
+    proxies = []
+    if response.status_code == 200:
+        lines = response.text.split("\n")
+        for line in lines:
+            parts = line.split()
+            if len(parts) > 1 and parts[0].replace(".", "").isdigit():  # Detect valid IPs
+                proxy = f"http://{parts[0]}:{parts[1]}"
+                proxies.append(proxy)
+    return proxies
 
-# Start WebDriver
-service = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=service, options=options)
+# Get a list of proxies
+proxy_list = get_proxies()
+print(f"Found {len(proxy_list)} proxies.")
 
+# ---------------------------
+# FUNCTION TO SET UP SELENIUM WEBDRIVER
+# ---------------------------
+def get_driver():
+    """Returns a Selenium WebDriver with a random proxy and user-agent."""
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Run in headless mode
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+    
+    # Use a random proxy
+    if proxy_list:
+        proxy = random.choice(proxy_list)
+        chrome_options.add_argument(f"--proxy-server={proxy}")
+        print(f"Using proxy: {proxy}")
+
+    # Use a fake user-agent
+    fake_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    chrome_options.add_argument(f"user-agent={fake_user_agent}")
+
+    # Initialize WebDriver
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    return driver
+
+# ---------------------------
+# FUNCTION TO SCRAPE JOB LISTINGS
+# ---------------------------
 def scrape_jobs():
-    """Scrapes job listings and returns a DataFrame."""
+    """Scrapes job postings from the website."""
+    driver = get_driver()
     jobs = []
     page = 1
-    
+
     while True:
         print(f"Scraping page {page}...")
-        driver.get(f"{BASE_URL}/jobs?page={page}")
-        time.sleep(3)  # Allow the page to load
-        
-        job_elements = driver.find_elements(By.CLASS_NAME, "job-listing")  # Update this selector as needed
-        
-        if not job_elements:
-            break  # No more pages left
-        
-        for job in job_elements:
-            try:
-                title = job.find_element(By.CLASS_NAME, "job-title").text
-                organization = job.find_element(By.CLASS_NAME, "job-organization").text
-                location = job.find_element(By.CLASS_NAME, "job-location").text
-                salary = job.find_element(By.CLASS_NAME, "job-salary").text or "N/A"
-                start_date = job.find_element(By.CLASS_NAME, "job-start-date").text or "N/A"
-                published_date = job.find_element(By.CLASS_NAME, "job-published-date").text or "N/A"
-                tags = job.find_element(By.CLASS_NAME, "job-tags").text or "N/A"
-                
-                jobs.append({
-                    "Title": title,
-                    "Organization": organization,
-                    "Location": location,
-                    "Salary": salary,
-                    "Starting Date": start_date,
-                    "Published Date": published_date,
-                    "Tags": tags
-                })
-            except Exception as e:
-                print(f"Skipping job due to error: {e}")
-        
-        page += 1
+        time.sleep(random.uniform(5, 10))  # Random delay
+
+        try:
+            driver.get(f"{BASE_URL}/jobs?page={page}")
+
+            # Find job listings (update the selector to match the actual website)
+            job_elements = driver.find_elements(By.CLASS_NAME, "job-listing")
+            
+            if not job_elements:
+                print("No more job listings found. Exiting.")
+                break
+
+            for job in job_elements:
+                try:
+                    title = job.find_element(By.CLASS_NAME, "title").text.strip()
+                    organization = job.find_element(By.CLASS_NAME, "organization").text.strip()
+                    location = job.find_element(By.CLASS_NAME, "location").text.strip()
+                    salary = job.find_element(By.CLASS_NAME, "salary").text.strip()
+                    date_posted = job.find_element(By.CLASS_NAME, "date").text.strip()
+
+                    jobs.append({
+                        "Title": title,
+                        "Organization": organization,
+                        "Location": location,
+                        "Salary": salary,
+                        "Published Date": date_posted,
+                    })
+                except Exception as e:
+                    print(f"Skipping job due to error: {e}")
+
+            page += 1  # Move to the next page
+
+        except Exception as e:
+            print(f"Error loading page {page}: {e}")
+            break
 
     driver.quit()
-    return pd.DataFrame(jobs)
+    return jobs
 
-def load_existing_data():
-    """Loads existing job data if the file exists."""
-    if os.path.exists(DATA_FILE):
-        return pd.read_csv(DATA_FILE)
-    return pd.DataFrame(columns=["Title", "Organization", "Location", "Salary", "Starting Date", "Published Date", "Tags"])
+# ---------------------------
+# FUNCTION TO REMOVE DUPLICATES AND SAVE DATA
+# ---------------------------
+def save_jobs(jobs):
+    """Saves job postings to a CSV file, appending new data while removing duplicates."""
+    try:
+        existing_df = pd.read_csv(OUTPUT_FILE)
+    except FileNotFoundError:
+        existing_df = pd.DataFrame()
 
-def save_updated_data(new_jobs_df):
-    """Combines new and old job data, removes duplicates, and saves to CSV."""
-    existing_df = load_existing_data()
-    
-    # Merge, drop duplicates based on 'Title' and 'Organization'
-    updated_df = pd.concat([existing_df, new_jobs_df]).drop_duplicates(subset=["Title", "Organization"], keep="last")
-    
-    # Save to file
-    updated_df.to_csv(DATA_FILE, index=False)
-    print(f"Updated job data saved to {DATA_FILE}")
+    new_df = pd.DataFrame(jobs)
+    combined_df = pd.concat([existing_df, new_df]).drop_duplicates(subset=["Title", "Organization", "Location"])
+    combined_df.to_csv(OUTPUT_FILE, index=False)
+    print(f"Saved {len(combined_df)} unique job postings.")
 
+# ---------------------------
+# RUN SCRIPT
+# ---------------------------
 if __name__ == "__main__":
     new_jobs = scrape_jobs()
-    if not new_jobs.empty:
-        save_updated_data(new_jobs)
+    if new_jobs:
+        save_jobs(new_jobs)
     else:
         print("No new jobs found.")
