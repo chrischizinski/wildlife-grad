@@ -1,4 +1,5 @@
 import logging
+import os
 import time
 import random  # For randomizing pauses
 import tempfile
@@ -13,12 +14,11 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
 # === Configuration Parameters ===
-POSTED_FILTER = "Last 7 days"  # For now, scrape all postings; later you can change to "Last 7 days"
+POSTED_FILTER = "Anytime"  # For now, scrape all postings; later you can change to "Last 7 days"
 KEYWORDS = "(Master) OR (PhD) OR (Graduate) OR (MS)"
 MAX_PAGES = None           # Set to an integer for testing; use None to scrape all pages.
 
 # === Setup Logging ===
-
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -35,14 +35,17 @@ def setup_driver(debug=False):
         options.add_argument("--headless")  # Run headless unless debugging
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920x1080")
-    # Additional options that help in CI environments
+    # These options help Chrome run reliably in CI environments.
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    # Create a unique temporary user-data directory
-    temp_dir = tempfile.mkdtemp()
-    options.add_argument(f"--user-data-dir={temp_dir}")
     
-    # Enable browser logging
+    # Conditionally add a unique user data directory only when not running in GitHub Actions.
+    if "GITHUB_ACTIONS" not in os.environ:
+        temp_dir = tempfile.mkdtemp()
+        options.add_argument(f"--user-data-dir={temp_dir}")
+    else:
+        logging.info("Running on GitHub Actions; skipping --user-data-dir argument.")
+    
     options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
     
     service = Service(ChromeDriverManager().install())
@@ -202,11 +205,9 @@ def collect_all_job_links(driver):
             logging.info("No job links found on this page, assuming end of results.")
             break
         all_links.extend(page_links)
-        # Respect MAX_PAGES if set.
         if MAX_PAGES is not None and current_page >= MAX_PAGES:
             logging.info(f"Reached MAX_PAGES limit ({MAX_PAGES}); stopping pagination.")
             break
-        # Try to navigate to the next page using dynamic pagination controls.
         next_page_number = current_page + 1
         try:
             next_page_xpath = f"//a[@class='page-link' and normalize-space(text())='{next_page_number}']"
@@ -239,19 +240,12 @@ def scrape_job_details(driver, job_link):
         except Exception:
             return default
 
-    # Extract the job title using the provided XPath.
+    # Extract fields using the provided XPaths.
     job_title = safe_find("/html/body/div/main/div[1]/div/h3", default="Not provided")
-    
-    # Extract the employer using the provided XPath.
     employer = safe_find("/html/body/div/main/div[1]/div/p/em", default="Not provided")
-    
-    # Extract the location using the provided XPath.
     location = safe_find("/html/body/div/main/div[1]/div/div[1]/div[5]/div[2]", default="Not provided")
-    
-    # Extract the tags using the provided XPath.
     tags = safe_find("/html/body/div/main/div[1]/div/div[1]/div[6]/div[2]/div", default="Not provided")
     
-    # Extract additional fields (adjust these XPaths as needed).
     application_deadline = safe_find("//div[contains(text(), 'Application Deadline:')]/following-sibling::div", default="Not provided")
     published_date = safe_find("//div[contains(text(), 'Published:')]/following-sibling::div", default="Not provided")
     start_date = safe_find("//div[contains(text(), 'Starting Date:')]/following-sibling::div", default="Not provided")
