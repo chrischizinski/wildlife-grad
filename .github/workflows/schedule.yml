@@ -25,4 +25,4 @@ jobs:
 
       - name: Run Scraper
         run: |
-          python your_scraper.py
+          python new_attempt.py
