@@ -1,8 +1,8 @@
 import logging
 import os
+import tempfile
 import time
 import random  # For randomizing pauses
-import tempfile
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -14,7 +14,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
 # === Configuration Parameters ===
-POSTED_FILTER = "Anytime"  # For now, scrape all postings; later you can change to "Last 7 days"
+POSTED_FILTER = "Anytime"  # For now, scrape all postings; later change to "Last 7 days" when ready.
 KEYWORDS = "(Master) OR (PhD) OR (Graduate) OR (MS)"
 MAX_PAGES = None           # Set to an integer for testing; use None to scrape all pages.
 
@@ -35,17 +35,16 @@ def setup_driver(debug=False):
         options.add_argument("--headless")  # Run headless unless debugging
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920x1080")
-    # These options help Chrome run reliably in CI environments.
+    # Additional options to help Chrome run reliably in CI environments.
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     
-    # Conditionally add a unique user data directory only when not running in GitHub Actions.
-    if "GITHUB_ACTIONS" not in os.environ:
-        temp_dir = tempfile.mkdtemp()
-        options.add_argument(f"--user-data-dir={temp_dir}")
-    else:
-        logging.info("Running on GitHub Actions; skipping --user-data-dir argument.")
+    # Always create a unique temporary user-data directory to avoid conflicts.
+    temp_dir = tempfile.mkdtemp()
+    options.add_argument(f"--user-data-dir={temp_dir}")
+    logging.info(f"Using temporary user-data-dir: {temp_dir}")
     
+    # Enable browser logging.
     options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
     
     service = Service(ChromeDriverManager().install())
@@ -56,7 +55,7 @@ def setup_driver(debug=False):
 def random_human_pause(min_seconds=1, max_seconds=3):
     time.sleep(random.uniform(min_seconds, max_seconds))
 
-# === Select Show 50 Option ===
+# === Select "Show 50" Option ===
 def select_show_50(driver):
     logging.info("🔎 Selecting 'Show 50' results per page...")
     try:
@@ -72,7 +71,6 @@ def select_show_50(driver):
         
         driver.execute_script("window.scrollTo(0, 0);")
         random_human_pause()
-        
         logging.info("✅ Selected 'Show 50' results per page.")
     except Exception as e:
         logging.error(f"⚠️ Failed to select 'Show 50': {e}")
@@ -98,7 +96,6 @@ def select_posted_option(driver, option_text):
         random_human_pause()
         driver.execute_script("arguments[0].click();", option_element)
         random_human_pause()
-        
         logging.info(f"✅ Selected 'Posted: {option_text}'.")
     except Exception as e:
         logging.error(f"⚠️ Failed to select 'Posted: {option_text}': {e}")
@@ -299,7 +296,7 @@ def scrape_jobs(driver):
     
     return pd.DataFrame(jobs)
 
-# === Run the Scraper ===
+# === Main Entry Point ===
 if __name__ == "__main__":
     driver = setup_driver(debug=True)
     try:
