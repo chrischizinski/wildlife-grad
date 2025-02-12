@@ -298,7 +298,13 @@ def scrape_jobs(driver):
 
 # === Main Entry Point ===
 if __name__ == "__main__":
-    driver = setup_driver(debug=True)
+    # Default to debug mode (visible browser) when running locally.
+    debug_mode = True
+    # Force headless mode if running on GitHub Actions.
+    if os.environ.get("GITHUB_ACTIONS") is not None:
+        debug_mode = False
+
+    driver = setup_driver(debug=debug_mode)
     try:
         job_data_df = scrape_jobs(driver)
         job_data_df.to_csv("job_listings.csv", index=False)
