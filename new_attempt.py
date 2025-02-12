@@ -4,6 +4,7 @@ import tempfile
 import time
 import random  # For randomizing pauses
 import pandas as pd
+import requests  # Required for Slack notifications
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys  # For sending the ESCAPE key
@@ -27,6 +28,25 @@ logging.basicConfig(
         logging.FileHandler("scraper.log", mode="a")
     ]
 )
+
+# === Slack Notification Function ===
+def send_slack_notification(message):
+    """
+    Sends a Slack notification using the incoming webhook URL specified in the SLACK_WEBHOOK environment variable.
+    """
+    webhook_url = os.environ.get("SLACK_WEBHOOK")
+    if not webhook_url:
+        logging.info("No SLACK_WEBHOOK environment variable set. Skipping Slack notification.")
+        return
+    payload = {"text": message}
+    try:
+        response = requests.post(webhook_url, json=payload, headers={'Content-Type': 'application/json'})
+        if response.status_code != 200:
+            logging.error(f"Failed to send Slack notification: {response.status_code}, {response.text}")
+        else:
+            logging.info("Slack notification sent successfully.")
+    except Exception as e:
+        logging.error(f"Error sending Slack notification: {e}")
 
 # === Setup Selenium WebDriver with Browser Logging Enabled ===
 def setup_driver(debug=False):
@@ -237,7 +257,6 @@ def scrape_job_details(driver, job_link):
         except Exception:
             return default
 
-    # Extract fields using the provided XPaths.
     job_title = safe_find("/html/body/div/main/div[1]/div/h3", default="Not provided")
     employer = safe_find("/html/body/div/main/div[1]/div/p/em", default="Not provided")
     location = safe_find("/html/body/div/main/div[1]/div/div[1]/div[5]/div[2]", default="Not provided")
@@ -277,23 +296,14 @@ def scrape_job_details(driver, job_link):
 def update_master_csv(new_data, master_csv="job_listings.csv"):
     """
     Update the master CSV file by appending new data and removing duplicates.
-    The update is performed via writing to a temporary file first and then
-    atomically replacing the original file.
+    The update is performed by writing to a temporary file first and then atomically replacing the original file.
     """
     if os.path.exists(master_csv):
         master_df = pd.read_csv(master_csv)
-        
-        # Extract job_id from the Posting URL (assuming URL contains '?id=XXXX')
         master_df["job_id"] = master_df["Posting URL"].apply(lambda url: url.split("id=")[-1])
         new_data["job_id"] = new_data["Posting URL"].apply(lambda url: url.split("id=")[-1])
-        
-        # Combine existing data with new data
         combined_df = pd.concat([master_df, new_data], ignore_index=True)
-        
-        # Remove duplicates based on job_id
         combined_df.drop_duplicates(subset=["job_id"], inplace=True)
-        
-        # Optionally drop the temporary job_id column
         combined_df.drop(columns=["job_id"], inplace=True)
     else:
         combined_df = new_data
@@ -308,7 +318,6 @@ def update_master_csv(new_data, master_csv="job_listings.csv"):
 
 # === Main Scraping Function (Two-Phase Approach) ===
 def scrape_jobs(driver):
-    # Open the main search page and apply filters.
     driver.get("https://jobs.rwfm.tamu.edu/search/")
     random_human_pause()
     select_show_50(driver)
@@ -339,14 +348,10 @@ if __name__ == "__main__":
 
     driver = setup_driver(debug=debug_mode)
     try:
-        # Optionally send a startup notification
         send_slack_notification("Wildlife Grad Job Scraper has started.")
-        
         job_data_df = scrape_jobs(driver)
         update_master_csv(job_data_df, master_csv="job_listings.csv")
         logging.info("✅ Job listings saved to job_listings.csv")
-        
-        # Optionally send a completion notification
         send_slack_notification("Wildlife Grad Job Scraper completed successfully.")
     except Exception as e:
         logging.exception("An unexpected error occurred during scraping:")
