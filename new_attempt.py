@@ -14,7 +14,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
 # === Configuration Parameters ===
-POSTED_FILTER = "Anytime"  # For now, scrape all postings; later change to "Last 7 days" when ready.
+POSTED_FILTER = "Last 7 days"  # Change from "Anytime" to "Last 7 days" for weekly automation.
 KEYWORDS = "(Master) OR (PhD) OR (Graduate) OR (MS)"
 MAX_PAGES = None           # Set to an integer for testing; use None to scrape all pages.
 
@@ -273,6 +273,39 @@ def scrape_job_details(driver, job_link):
     }
     return job_data
 
+# === Update Master CSV Function ===
+def update_master_csv(new_data, master_csv="job_listings.csv"):
+    """
+    Update the master CSV file by appending new data and removing duplicates.
+    The update is performed via writing to a temporary file first and then
+    atomically replacing the original file.
+    """
+    if os.path.exists(master_csv):
+        master_df = pd.read_csv(master_csv)
+        
+        # Extract job_id from the Posting URL (assuming URL contains '?id=XXXX')
+        master_df["job_id"] = master_df["Posting URL"].apply(lambda url: url.split("id=")[-1])
+        new_data["job_id"] = new_data["Posting URL"].apply(lambda url: url.split("id=")[-1])
+        
+        # Combine existing data with new data
+        combined_df = pd.concat([master_df, new_data], ignore_index=True)
+        
+        # Remove duplicates based on job_id
+        combined_df.drop_duplicates(subset=["job_id"], inplace=True)
+        
+        # Optionally drop the temporary job_id column
+        combined_df.drop(columns=["job_id"], inplace=True)
+    else:
+        combined_df = new_data
+
+    tmp_file = master_csv + ".tmp"
+    try:
+        combined_df.to_csv(tmp_file, index=False)
+        os.replace(tmp_file, master_csv)
+        logging.info("✅ Master CSV updated with new job postings.")
+    except Exception as e:
+        logging.error(f"⚠️ Failed to update master CSV: {e}")
+
 # === Main Scraping Function (Two-Phase Approach) ===
 def scrape_jobs(driver):
     # Open the main search page and apply filters.
@@ -307,7 +340,8 @@ if __name__ == "__main__":
     driver = setup_driver(debug=debug_mode)
     try:
         job_data_df = scrape_jobs(driver)
-        job_data_df.to_csv("job_listings.csv", index=False)
+        # Update master CSV with new job postings, appending and deduplicating.
+        update_master_csv(job_data_df, master_csv="job_listings.csv")
         logging.info("✅ Job listings saved to job_listings.csv")
     except Exception as e:
         logging.exception("An unexpected error occurred during scraping:")
