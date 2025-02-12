@@ -2,12 +2,14 @@ name: Weekly Job Scraper
 
 on:
   schedule:
-    - cron: '0 0 * * 0'  # This cron schedule runs the workflow every Sunday at midnight UTC; adjust as needed.
-  workflow_dispatch:   # Allows manual triggering from the Actions tab
+    - cron: '0 0 * * 0'  # Every Sunday at midnight UTC
+  workflow_dispatch:   # Allows manual triggering
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
     steps:
       - name: Checkout repository
@@ -16,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12.7'  # Use your desired Python version
+          python-version: '3.12.7'
 
       - name: Install Dependencies
         run: |
@@ -24,5 +26,4 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Scraper
-        run: |
-          python new_attempt.py
+        run: python new_attempt.py
