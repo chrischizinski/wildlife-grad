@@ -339,11 +339,17 @@ if __name__ == "__main__":
 
     driver = setup_driver(debug=debug_mode)
     try:
+        # Optionally send a startup notification
+        send_slack_notification("Wildlife Grad Job Scraper has started.")
+        
         job_data_df = scrape_jobs(driver)
-        # Update master CSV with new job postings, appending and deduplicating.
         update_master_csv(job_data_df, master_csv="job_listings.csv")
         logging.info("✅ Job listings saved to job_listings.csv")
+        
+        # Optionally send a completion notification
+        send_slack_notification("Wildlife Grad Job Scraper completed successfully.")
     except Exception as e:
         logging.exception("An unexpected error occurred during scraping:")
+        send_slack_notification(f"Scraper Error: {e}\nCheck the logs for details.")
     finally:
         driver.quit()
