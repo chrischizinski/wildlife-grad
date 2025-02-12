@@ -1,10 +1,11 @@
 import logging
 import os
+import re
 import tempfile
 import time
-import random  # For randomizing pauses
+import random
 import pandas as pd
-import requests  # Required for Slack notifications
+import requests  # For Slack notifications
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys  # For sending the ESCAPE key
@@ -15,9 +16,9 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
 # === Configuration Parameters ===
-POSTED_FILTER = "Last 7 days"  # Change from "Anytime" to "Last 7 days" for weekly automation.
+POSTED_FILTER = "Last 7 days"  # Use "Last 7 days" for scheduled scraping.
 KEYWORDS = "(Master) OR (PhD) OR (Graduate) OR (MS)"
-MAX_PAGES = None           # Set to an integer for testing; use None to scrape all pages.
+MAX_PAGES = None             # Set to an integer for testing; use None to scrape all pages.
 
 # === Setup Logging ===
 logging.basicConfig(
@@ -48,34 +49,239 @@ def send_slack_notification(message):
     except Exception as e:
         logging.error(f"Error sending Slack notification: {e}")
 
-# === Setup Selenium WebDriver with Browser Logging Enabled ===
+# === Salary Parsing Function ===
+def parse_salary(salary_str):
+    """
+    Parse a salary string and convert it to an annual salary value (float).
+    Handles ranges (returns the average) and different time units (per year, per month, per week, per hour).
+    Returns None if no numeric value can be extracted.
+    """
+    if not isinstance(salary_str, str):
+        return None
+
+    s = salary_str.lower().strip()
+    if any(term in s for term in ["none", "commensurate", "negotiable"]):
+        return None
+
+    s = s.replace("starting at", "").strip()
+    numbers = re.findall(r"\d[\d,\.]*", s)
+    if not numbers:
+        return None
+
+    values = []
+    for num in numbers:
+        try:
+            values.append(float(num.replace(",", "")))
+        except ValueError:
+            continue
+    if not values:
+        return None
+
+    if "to" in s and len(values) >= 2:
+        base_value = sum(values[:2]) / 2.0
+    else:
+        base_value = values[0]
+
+    if "per year" in s:
+        multiplier = 1
+    elif "per month" in s:
+        multiplier = 12
+    elif "per week" in s:
+        multiplier = 52
+    elif "per hour" in s:
+        multiplier = 2080  # 40 hours * 52 weeks
+    else:
+        multiplier = 1
+
+    return base_value * multiplier
+
+# === Extract State from Location ===
+def extract_state(location_str):
+    """
+    Extracts the state from a location string.
+    Handles:
+      - Parentheses (e.g., "Auburn University (Alabama)" returns "Alabama")
+      - Comma-separated locations (e.g., "Condon, Montana" returns "Montana")
+      - Special case for "remote work allowed" returns "Remote"
+    """
+    if not isinstance(location_str, str):
+        return None
+    loc = location_str.strip()
+    if "remote work allowed" in loc.lower():
+        return "Remote"
+    m = re.search(r'\(([^)]+)\)\s*$', loc)
+    if m:
+        content = m.group(1)
+        parts = [p.strip() for p in content.split(",")]
+        return parts[-1]
+    if "," in loc:
+        parts = [p.strip() for p in loc.split(",")]
+        return parts[-1]
+    return None
+
+# === Employer Parsing Functions ===
+def parse_employer(employer_str):
+    """
+    Parses the employer string to separate the employer name and employer type.
+    For example:
+      "The Jones Center at Ichauway (Private)" -> ("The Jones Center at Ichauway", "Private")
+    Returns a tuple (employer_name, employer_type) where employer_type is None if not found.
+    """
+    if not isinstance(employer_str, str):
+        return None, None
+    employer_str = employer_str.strip()
+    m = re.search(r'\(([^)]+)\)\s*$', employer_str)
+    if m:
+        employer_type = m.group(1).strip()
+        employer_name = re.sub(r'\s*\([^)]+\)\s*$', '', employer_str).strip()
+        return employer_name, employer_type
+    else:
+        return employer_str, None
+
+def is_big_ten(employer_name):
+    """
+    Determines whether a university is part of the Big Ten.
+    Returns True if the employer (assumed to be a university) matches Big Ten keywords,
+    False if it's a university but not in the Big Ten, and None if not a university.
+    """
+    if not isinstance(employer_name, str):
+        return None
+    lower_name = employer_name.lower()
+    if "university" not in lower_name:
+        return None
+    big_ten_keywords = [
+        "university of illinois",
+        "indiana university",
+        "university of iowa",
+        "university of maryland",
+        "university of michigan",
+        "michigan state university",
+        "university of minnesota",
+        "university of nebraska",
+        "northwestern university",
+        "ohio state university",
+        "penn state university",
+        "purdue university",
+        "rutgers university",
+        "university of wisconsin"
+    ]
+    for keyword in big_ten_keywords:
+        if keyword in lower_name:
+            return True
+    return False
+
+def process_employer_column(input_csv="data/job_listings.csv", output_csv="data/job_listings.csv"):
+    """
+    Processes the Employer column in the master job listings CSV.
+    Splits the employer string into 'Employer_Name' and 'Employer_Type',
+    and determines if the employer is a Big Ten university.
+    Adds new columns 'Employer_Name', 'Employer_Type', and 'Big_Ten'
+    (with "Yes" or "No" for universities), without removing the original Employer data.
+    Updates the same CSV.
+    """
+    df = pd.read_csv(input_csv)
+    if "Employer" not in df.columns:
+        logging.error("Employer column not found in the CSV. Skipping employer processing.")
+        return
+    df[['Employer_Name', 'Employer_Type']] = df['Employer'].apply(lambda x: pd.Series(parse_employer(x)))
+    def check_big_ten(name):
+        is_uni = is_big_ten(name)
+        if is_uni is None:
+            return None
+        return "Yes" if is_uni else "No"
+    df['Big_Ten'] = df['Employer_Name'].apply(check_big_ten)
+    df.to_csv(output_csv, index=False)
+    logging.info(f"Processed employer data saved to {output_csv}")
+
+# === Apply Cost-of-Living Adjustment ===
+def apply_cost_of_living_adjustment(jobs_csv="data/job_listings.csv", rpp_csv="data/rpp_data.csv"):
+    """
+    Merges the master job data with the cost-of-living (RPP) data and computes an adjusted salary.
+    Expects the RPP CSV to have columns: location,index.
+    Uses the extracted State (from the Location field) to merge with the RPP mapping.
+    Adds a new column "Adjusted Salary" without removing the original Salary column.
+    Updates the same master CSV.
+    """
+    df = pd.read_csv(jobs_csv)
+    rpp_df = pd.read_csv(rpp_csv)
+    df["State"] = df["Location"].apply(lambda x: extract_state(x))
+    rpp_df["State"] = rpp_df["location"].str.strip()
+    merged_df = pd.merge(df, rpp_df, left_on="State", right_on="State", how="left")
+    if "Salary" in merged_df.columns:
+        merged_df["Salary_numeric"] = merged_df["Salary"].apply(parse_salary)
+        base_index = 100.0  # Define your base index (e.g., for Lincoln, NE)
+        merged_df["Adjusted Salary"] = merged_df.apply(
+            lambda row: round(row["Salary_numeric"] * (base_index / row["index"]), 2)
+            if pd.notnull(row["Salary_numeric"]) and pd.notnull(row["index"]) else None,
+            axis=1
+        )
+    merged_df.to_csv(jobs_csv, index=False)
+    logging.info(f"Cost-of-living adjustments applied and saved to {jobs_csv}")
+
+# === Update Master CSV Function ===
+def update_master_csv(new_data, master_csv="data/job_listings.csv"):
+    """
+    Updates the master CSV file by appending new data and removing duplicates.
+    The update is performed by writing to a temporary file first and then atomically replacing the original file.
+    Returns a tuple (new_jobs_count, total_jobs_count).
+    """
+    if os.path.exists(master_csv):
+        master_df = pd.read_csv(master_csv)
+        # Normalize column names (strip spaces)
+        master_df.columns = [col.strip() for col in master_df.columns]
+        new_data.columns = [col.strip() for col in new_data.columns]
+        if "Posting URL" not in master_df.columns:
+            logging.error(f"Column 'Posting URL' not found in master CSV. Columns found: {master_df.columns}")
+            return None, None
+        if "Posting URL" not in new_data.columns:
+            logging.error(f"Column 'Posting URL' not found in new data. Columns found: {new_data.columns}")
+            return None, None
+        master_df["job_id"] = master_df["Posting URL"].apply(lambda url: url.split("id=")[-1])
+        new_data["job_id"] = new_data["Posting URL"].apply(lambda url: url.split("id=")[-1])
+        new_jobs_df = new_data[~new_data["job_id"].isin(master_df["job_id"])]
+        new_jobs_count = len(new_jobs_df)
+        combined_df = pd.concat([master_df, new_data], ignore_index=True)
+        combined_df.drop_duplicates(subset=["job_id"], inplace=True)
+        total_jobs_count = len(combined_df)
+        combined_df.drop(columns=["job_id"], inplace=True)
+    else:
+        new_jobs_count = len(new_data)
+        total_jobs_count = len(new_data)
+        combined_df = new_data
+
+    tmp_file = master_csv + ".tmp"
+    try:
+        combined_df.to_csv(tmp_file, index=False)
+        os.replace(tmp_file, master_csv)
+        logging.info("✅ Master CSV updated with new job postings.")
+        return new_jobs_count, total_jobs_count
+    except Exception as e:
+        logging.error(f"⚠️ Failed to update master CSV: {e}")
+        return None, None
+
+# === Selenium WebDriver Setup ===
 def setup_driver(debug=False):
     options = Options()
     if not debug:
         options.add_argument("--headless")  # Run headless unless debugging
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920x1080")
-    # Additional options to help Chrome run reliably in CI environments.
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    
-    # Always create a unique temporary user-data directory to avoid conflicts.
+    # Always create a unique temporary user-data directory.
     temp_dir = tempfile.mkdtemp()
     options.add_argument(f"--user-data-dir={temp_dir}")
     logging.info(f"Using temporary user-data-dir: {temp_dir}")
-    
-    # Enable browser logging.
     options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
-    
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
     return driver
 
-# === Human-like Pause with Randomization ===
+# === Human-like Pause ===
 def random_human_pause(min_seconds=1, max_seconds=3):
     time.sleep(random.uniform(min_seconds, max_seconds))
 
-# === Select "Show 50" Option ===
+# === Scraper Functions ===
 def select_show_50(driver):
     logging.info("🔎 Selecting 'Show 50' results per page...")
     try:
@@ -84,18 +290,14 @@ def select_show_50(driver):
         )
         driver.execute_script("arguments[0].scrollIntoView(true);", select_elem)
         random_human_pause()
-        
-        select_obj = Select(select_elem)
-        select_obj.select_by_value("50")
+        Select(select_elem).select_by_value("50")
         random_human_pause()
-        
         driver.execute_script("window.scrollTo(0, 0);")
         random_human_pause()
         logging.info("✅ Selected 'Show 50' results per page.")
     except Exception as e:
         logging.error(f"⚠️ Failed to select 'Show 50': {e}")
 
-# === Select Posted Option from Drop-Down ===
 def select_posted_option(driver, option_text):
     logging.info(f"🔎 Selecting 'Posted: {option_text}' filter...")
     try:
@@ -107,7 +309,6 @@ def select_posted_option(driver, option_text):
         random_human_pause()
         driver.execute_script("arguments[0].click();", dropdown_button)
         random_human_pause()
-        
         option_xpath = f"//a[@class='dropdown-item' and normalize-space(text())='{option_text}']"
         option_element = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, option_xpath))
@@ -120,7 +321,6 @@ def select_posted_option(driver, option_text):
     except Exception as e:
         logging.error(f"⚠️ Failed to select 'Posted: {option_text}': {e}")
 
-# === Select Graduate Opportunities Filter ===
 def select_graduate_opportunities(driver):
     logging.info("🔎 Selecting 'Graduate Opportunities' filter...")
     try:
@@ -135,7 +335,6 @@ def select_graduate_opportunities(driver):
     except Exception as e:
         logging.error(f"⚠️ Failed to click the Graduate Opportunities drop-down: {e}")
         return
-
     try:
         grad_checkbox = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.ID, "Job-Type-Graduate-checkbox"))
@@ -144,14 +343,12 @@ def select_graduate_opportunities(driver):
         random_human_pause()
         driver.execute_script("arguments[0].click();", grad_checkbox)
         random_human_pause()
-        
         if not grad_checkbox.is_selected():
             logging.error("⚠️ Graduate Opportunities checkbox was not selected after clicking.")
         else:
             logging.info("✅ Selected 'Graduate Opportunities'.")
     except Exception as e:
         logging.error(f"⚠️ Failed to select 'Graduate Opportunities': {e}")
-
     try:
         body = driver.find_element(By.TAG_NAME, "body")
         body.send_keys(Keys.ESCAPE)
@@ -159,7 +356,6 @@ def select_graduate_opportunities(driver):
         logging.info("✅ Closed Graduate Opportunities drop-down.")
     except Exception as e:
         logging.error(f"⚠️ Failed to close the Graduate Opportunities drop-down: {e}")
-
     try:
         browser_logs = driver.get_log("browser")
         for entry in browser_logs:
@@ -168,7 +364,6 @@ def select_graduate_opportunities(driver):
     except Exception as e:
         logging.error(f"Could not fetch browser logs: {e}")
 
-# === Enter Keywords ===
 def enter_keywords(driver, keywords):
     logging.info(f"🔎 Entering keywords: {keywords}")
     try:
@@ -182,7 +377,6 @@ def enter_keywords(driver, keywords):
     except Exception as e:
         logging.error(f"⚠️ Failed to enter keywords: {e}")
 
-# === Click Search Button ===
 def click_search(driver):
     logging.info("🔎 Clicking 'Search' button...")
     try:
@@ -197,7 +391,6 @@ def click_search(driver):
     except Exception as e:
         logging.error(f"⚠️ Failed to click 'Search' button: {e}")
 
-# === Extract Job Links from the Main Search Results Page ===
 def extract_job_links(driver):
     logging.info("🔎 Extracting job links from the page...")
     try:
@@ -211,7 +404,6 @@ def extract_job_links(driver):
         logging.error(f"⚠️ Failed to extract job links: {e}")
         return []
 
-# === Collect All Job Links from All Pagination Pages (Link Collection Phase) ===
 def collect_all_job_links(driver):
     all_links = []
     current_page = 1
@@ -245,7 +437,6 @@ def collect_all_job_links(driver):
             break
     return all_links
 
-# === Scrape Job Details from a Given Job Link (Job Detail Extraction Phase) ===
 def scrape_job_details(driver, job_link):
     logging.info(f"🔎 Scraping job details from {job_link}...")
     driver.get(job_link)
@@ -292,22 +483,28 @@ def scrape_job_details(driver, job_link):
     }
     return job_data
 
-# === Update Master CSV Function ===
-def update_master_csv(new_data, master_csv="job_listings.csv"):
-    """
-    Update the master CSV file by appending new data and removing duplicates.
-    The update is performed by writing to a temporary file first and then atomically replacing the original file.
-    Returns a tuple (new_jobs_count, total_jobs_count).
-    """
+def update_master_csv(new_data, master_csv="data/job_listings.csv"):
     if os.path.exists(master_csv):
         master_df = pd.read_csv(master_csv)
+        # Debug: Print column names
+        logging.info(f"Master CSV columns: {master_df.columns.tolist()}")
+        
+        # Normalize column names by stripping whitespace
+        master_df.columns = [col.strip() for col in master_df.columns]
+        new_data.columns = [col.strip() for col in new_data.columns]
+        
+        # Check if 'Posting URL' exists; if not, list available columns
+        if "Posting URL" not in master_df.columns:
+            logging.error(f"Column 'Posting URL' not found in master CSV. Columns found: {master_df.columns.tolist()}")
+            return None, None
+        if "Posting URL" not in new_data.columns:
+            logging.error(f"Column 'Posting URL' not found in new data. Columns found: {new_data.columns.tolist()}")
+            return None, None
+
         master_df["job_id"] = master_df["Posting URL"].apply(lambda url: url.split("id=")[-1])
         new_data["job_id"] = new_data["Posting URL"].apply(lambda url: url.split("id=")[-1])
-        
-        # Determine which jobs in new_data are not in the master dataframe.
         new_jobs_df = new_data[~new_data["job_id"].isin(master_df["job_id"])]
         new_jobs_count = len(new_jobs_df)
-        
         combined_df = pd.concat([master_df, new_data], ignore_index=True)
         combined_df.drop_duplicates(subset=["job_id"], inplace=True)
         total_jobs_count = len(combined_df)
@@ -327,7 +524,30 @@ def update_master_csv(new_data, master_csv="job_listings.csv"):
         logging.error(f"⚠️ Failed to update master CSV: {e}")
         return None, None
 
-# === Main Scraping Function (Two-Phase Approach) ===
+def apply_cost_of_living_adjustment(jobs_csv="data/job_listings.csv", rpp_csv="data/rpp_data.csv"):
+    """
+    Merges the master job data with the cost-of-living (RPP) data and computes an adjusted salary.
+    Expects the RPP CSV to have columns: location,index.
+    Uses the extracted State (from the Location field) to merge with the RPP mapping.
+    Adds a new column "Adjusted Salary" without removing the original Salary column.
+    Updates the same master CSV.
+    """
+    df = pd.read_csv(jobs_csv)
+    rpp_df = pd.read_csv(rpp_csv)
+    df["State"] = df["Location"].apply(lambda x: extract_state(x))
+    rpp_df["State"] = rpp_df["location"].str.strip()
+    merged_df = pd.merge(df, rpp_df, left_on="State", right_on="State", how="left")
+    if "Salary" in merged_df.columns:
+        merged_df["Salary_numeric"] = merged_df["Salary"].apply(parse_salary)
+        base_index = 100.0  # Define your base index (e.g., for Lincoln, NE)
+        merged_df["Adjusted Salary"] = merged_df.apply(
+            lambda row: round(row["Salary_numeric"] * (base_index / row["index"]), 2)
+            if pd.notnull(row["Salary_numeric"]) and pd.notnull(row["index"]) else None,
+            axis=1
+        )
+    merged_df.to_csv(jobs_csv, index=False)
+    logging.info(f"Cost-of-living adjustments applied and saved to {jobs_csv}")
+
 def scrape_jobs(driver):
     driver.get("https://jobs.rwfm.tamu.edu/search/")
     random_human_pause()
@@ -336,24 +556,42 @@ def scrape_jobs(driver):
     select_graduate_opportunities(driver)
     enter_keywords(driver, KEYWORDS)
     click_search(driver)
-    
-    # PHASE 1: Collect all job links from the main search results pages.
     job_links = collect_all_job_links(driver)
     logging.info(f"Total job links collected: {len(job_links)}")
-    
-    # PHASE 2: Scrape details from each job link.
     jobs = []
     for link in job_links:
         job_data = scrape_job_details(driver, link)
         jobs.append(job_data)
-    
     return pd.DataFrame(jobs)
+
+# === Setup Selenium WebDriver ===
+def setup_driver(debug=False):
+    options = Options()
+    if not debug:
+        options.add_argument("--headless")  # Run headless unless debugging
+    options.add_argument("--disable-gpu")
+    options.add_argument("--window-size=1920x1080")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    
+    # Always create a unique temporary user-data directory.
+    temp_dir = tempfile.mkdtemp()
+    options.add_argument(f"--user-data-dir={temp_dir}")
+    logging.info(f"Using temporary user-data-dir: {temp_dir}")
+    
+    options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
+    
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=options)
+    return driver
+
+# === Human-like Pause ===
+def random_human_pause(min_seconds=1, max_seconds=3):
+    time.sleep(random.uniform(min_seconds, max_seconds))
 
 # === Main Entry Point ===
 if __name__ == "__main__":
-    # Default to debug mode (visible browser) when running locally.
     debug_mode = True
-    # Force headless mode if running on GitHub Actions.
     if os.environ.get("GITHUB_ACTIONS") is not None:
         debug_mode = False
 
@@ -361,14 +599,17 @@ if __name__ == "__main__":
     try:
         send_slack_notification("Wildlife Grad Job Scraper has started.")
         job_data_df = scrape_jobs(driver)
-        new_jobs_count, total_jobs_count = update_master_csv(job_data_df, master_csv="job_listings.csv")
-        logging.info("✅ Job listings saved to job_listings.csv")
+        new_jobs_count, total_jobs_count = update_master_csv(job_data_df, master_csv="data/job_listings.csv")
+        logging.info("✅ Job listings saved to data/job_listings.csv")
         if new_jobs_count is not None and total_jobs_count is not None:
             send_slack_notification(f"Wildlife Grad Job Scraper completed successfully: {new_jobs_count} new jobs scraped, {total_jobs_count} total jobs.")
         else:
             send_slack_notification("Wildlife Grad Job Scraper completed, but failed to update master CSV properly.")
+        apply_cost_of_living_adjustment(jobs_csv="data/job_listings.csv", rpp_csv="data/rpp_data.csv")
+        process_employer_column(input_csv="data/job_listings.csv", output_csv="data/job_listings.csv")
+        send_slack_notification("Wildlife Grad Job Scraper post-processing completed successfully.")
     except Exception as e:
-        logging.exception("An unexpected error occurred during scraping:")
+        logging.exception("An unexpected error occurred during scraping or processing:")
         send_slack_notification(f"Scraper Error: {e}\nCheck the logs for details.")
     finally:
         driver.quit()
