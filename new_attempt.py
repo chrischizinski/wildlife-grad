@@ -297,15 +297,24 @@ def update_master_csv(new_data, master_csv="job_listings.csv"):
     """
     Update the master CSV file by appending new data and removing duplicates.
     The update is performed by writing to a temporary file first and then atomically replacing the original file.
+    Returns a tuple (new_jobs_count, total_jobs_count).
     """
     if os.path.exists(master_csv):
         master_df = pd.read_csv(master_csv)
         master_df["job_id"] = master_df["Posting URL"].apply(lambda url: url.split("id=")[-1])
         new_data["job_id"] = new_data["Posting URL"].apply(lambda url: url.split("id=")[-1])
+        
+        # Determine which jobs in new_data are not in the master dataframe.
+        new_jobs_df = new_data[~new_data["job_id"].isin(master_df["job_id"])]
+        new_jobs_count = len(new_jobs_df)
+        
         combined_df = pd.concat([master_df, new_data], ignore_index=True)
         combined_df.drop_duplicates(subset=["job_id"], inplace=True)
+        total_jobs_count = len(combined_df)
         combined_df.drop(columns=["job_id"], inplace=True)
     else:
+        new_jobs_count = len(new_data)
+        total_jobs_count = len(new_data)
         combined_df = new_data
 
     tmp_file = master_csv + ".tmp"
@@ -313,8 +322,10 @@ def update_master_csv(new_data, master_csv="job_listings.csv"):
         combined_df.to_csv(tmp_file, index=False)
         os.replace(tmp_file, master_csv)
         logging.info("✅ Master CSV updated with new job postings.")
+        return new_jobs_count, total_jobs_count
     except Exception as e:
         logging.error(f"⚠️ Failed to update master CSV: {e}")
+        return None, None
 
 # === Main Scraping Function (Two-Phase Approach) ===
 def scrape_jobs(driver):
@@ -350,9 +361,12 @@ if __name__ == "__main__":
     try:
         send_slack_notification("Wildlife Grad Job Scraper has started.")
         job_data_df = scrape_jobs(driver)
-        update_master_csv(job_data_df, master_csv="job_listings.csv")
+        new_jobs_count, total_jobs_count = update_master_csv(job_data_df, master_csv="job_listings.csv")
         logging.info("✅ Job listings saved to job_listings.csv")
-        send_slack_notification("Wildlife Grad Job Scraper completed successfully.")
+        if new_jobs_count is not None and total_jobs_count is not None:
+            send_slack_notification(f"Wildlife Grad Job Scraper completed successfully: {new_jobs_count} new jobs scraped, {total_jobs_count} total jobs.")
+        else:
+            send_slack_notification("Wildlife Grad Job Scraper completed, but failed to update master CSV properly.")
     except Exception as e:
         logging.exception("An unexpected error occurred during scraping:")
         send_slack_notification(f"Scraper Error: {e}\nCheck the logs for details.")
