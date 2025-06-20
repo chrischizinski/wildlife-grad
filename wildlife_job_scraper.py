@@ -300,28 +300,52 @@ class WildlifeJobScraper:
             List[int]: List of page numbers to scrape
         """
         try:
+            # Use the working selector that finds onclick attributes with pageNumCtrl
             pagination_links = self.driver.find_elements(
-                By.XPATH, "//ul[@class='pagination']//a[@class='page-link']"
+                By.XPATH, "//a[contains(@onclick, 'pageNumCtrl.value=')]"
             )
             
             page_numbers = []
+            max_page = 1
+            
             for link in pagination_links:
                 onclick_attr = link.get_attribute("onclick")
                 if onclick_attr and "pageNumCtrl.value=" in onclick_attr:
                     try:
-                        page_num = int(onclick_attr.split("=")[1].split(";")[0].strip())
+                        # Extract page number from onclick="pageNumCtrl.value=2; submitListingForm(true);"
+                        page_num = int(onclick_attr.split("pageNumCtrl.value=")[1].split(";")[0].strip())
                         page_numbers.append(page_num)
+                        max_page = max(max_page, page_num)
                     except (ValueError, IndexError):
                         continue
-                        
-            # Remove duplicates and sort
-            page_numbers = sorted(set(page_numbers))
-            self.logger.info(f"Found {len(page_numbers)} pages to scrape")
-            return page_numbers
+            
+            # If we found a "Last" page, generate all page numbers from 1 to max
+            if page_numbers:
+                # Generate complete page range from 1 to the highest page number found
+                complete_pages = list(range(1, max_page + 1))
+                self.logger.info(f"Found {max_page} total pages to scrape")
+                return complete_pages
+            else:
+                # Fallback: try to detect total pages from results text
+                try:
+                    results_text = self.driver.find_element(By.XPATH, "//*[contains(text(), 'of')]").text
+                    # Look for pattern like "(1 - 10 of 233)"
+                    import re
+                    match = re.search(r'of\s+(\d+)', results_text)
+                    if match:
+                        total_results = int(match.group(1))
+                        pages_needed = (total_results + self.config.page_size - 1) // self.config.page_size
+                        self.logger.info(f"Calculated {pages_needed} pages from {total_results} total results")
+                        return list(range(1, pages_needed + 1))
+                except:
+                    pass
+                    
+                self.logger.info("No pagination found, assuming single page")
+                return [1]
             
         except Exception as e:
             self.logger.warning(f"Failed to get pagination info: {e}")
-            return []
+            return [1]  # Return page 1 as fallback
             
     def navigate_to_page(self, page_number: int) -> None:
         """

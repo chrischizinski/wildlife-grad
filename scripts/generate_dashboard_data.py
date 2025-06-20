@@ -12,12 +12,19 @@ import re
 
 def load_latest_jobs():
     """Load the latest job data."""
-    data_path = Path("data/jobs_latest.json")
-    if not data_path.exists():
-        return []
+    # Try the current file first
+    data_path = Path("data/graduate_assistantships.json")
+    if data_path.exists():
+        with open(data_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
     
-    with open(data_path, 'r', encoding='utf-8') as f:
-        return json.load(f)
+    # Fallback to jobs_latest.json
+    data_path = Path("data/jobs_latest.json")
+    if data_path.exists():
+        with open(data_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    
+    return []
 
 
 def extract_degree_types(jobs):
@@ -125,15 +132,37 @@ def generate_dashboard_data():
         print("No job data found")
         return
     
-    # Generate statistics
-    stats = {
-        'total_jobs': len(jobs),
-        'last_updated': datetime.now().isoformat(),
-        'degree_types': extract_degree_types(jobs),
-        'locations': extract_locations(jobs),
-        'salary_ranges': extract_salary_ranges(jobs),
-        'research_areas': extract_research_areas(jobs),
-    }
+    # Check if enhanced analysis exists
+    enhanced_file = Path("data/enhanced_analysis.json")
+    if enhanced_file.exists():
+        with open(enhanced_file, 'r', encoding='utf-8') as f:
+            enhanced_data = json.load(f)
+        
+        # Use enhanced analysis data
+        stats = {
+            'total_jobs': enhanced_data['total_positions'],
+            'last_updated': enhanced_data['last_updated'],
+            'degree_types': extract_degree_types(jobs),  # Keep original for comparison
+            'locations': extract_locations(jobs),
+            'salary_ranges': extract_salary_ranges(jobs),
+            'research_areas': extract_research_areas(jobs),
+            # Add enhanced analytics
+            'enhanced_disciplines': enhanced_data['disciplines'],
+            'geographic_regions': enhanced_data['geographic_regions'],
+            'salary_analysis_lincoln_adjusted': enhanced_data['salary_analysis_lincoln_adjusted'],
+            'temporal_trends': enhanced_data['temporal_trends'],
+            'merge_stats': enhanced_data['merge_stats']
+        }
+    else:
+        # Fallback to basic analysis
+        stats = {
+            'total_jobs': len(jobs),
+            'last_updated': datetime.now().isoformat(),
+            'degree_types': extract_degree_types(jobs),
+            'locations': extract_locations(jobs),
+            'salary_ranges': extract_salary_ranges(jobs),
+            'research_areas': extract_research_areas(jobs),
+        }
     
     # Generate time series data (if historical data exists)
     historical_data = []
