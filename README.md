@@ -1,131 +1,213 @@
-# Wildlife Grad Job Scraper
+# Wildlife Jobs Board Scraper
 
-This project is a Python-based web scraper designed to collect graduate assistantship job postings from the Wildlife (or related) jobs website. The scraper uses Selenium to automate browser interactions and extract details (such as job title, employer, location, tags, etc.) from each job posting. It follows a two-phase approach:
-
-1. **Link Collection Phase:**  
-   Paginate through the main search results to collect all job posting URLs.
-2. **Job Detail Extraction Phase:**  
-   Visit each job posting URL and extract detailed job information.
-
-The project also integrates with GitHub Actions to run the scraper on a weekly schedule and is configured for robust logging and error handling.
+A comprehensive Python scraper for graduate assistantship opportunities from the Texas A&M Wildlife and Fisheries job board. This tool automates the collection of job listings for academic research purposes.
 
 ## Features
 
-- **Configurable Filters:** Easily adjust the posted filter (e.g., "Anytime" or "Last 7 days") and keywords.
-- **Pagination Handling:** Collects job links across multiple pages.
-- **Two-Phase Scraping:** Separates link collection from job detail extraction for improved reliability.
-- **CI/CD Integration:** Automated weekly runs using GitHub Actions.
-- **Logging & Error Handling:** Logs output both to the console and to a log file (`scraper.log`).
-
-## Requirements
-
-- Python 3.12.7 (or a compatible version)
-- The dependencies listed in the `requirements.txt` file
-
-### Example `requirements.txt`
-```
-requests
-beautifulsoup4
-selenium
-webdriver-manager
-pandas
-fake_useragent
-```
-
-> **Note:** Some packages (like `requests` and `beautifulsoup4`) may be included for potential future enhancements or alternative parsing methods, even if Selenium is the primary tool used.
+- **Robust scraping** with anti-detection measures
+- **Data validation** using Pydantic models
+- **Multiple output formats** (JSON, CSV)
+- **Configurable parameters** via environment variables or CLI
+- **Comprehensive logging** for debugging and monitoring
+- **Unit tests** with pytest
+- **Type hints** throughout the codebase
+- **Academic research focused** with ethical scraping practices
 
 ## Installation
 
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/chrischizinski/wildife-grad.git
-   cd wildife-grad
-   ```
+1. Clone this repository:
+```bash
+git clone <repository-url>
+cd WildlifeJobsBoardScrape
+```
 
-2. **Install the Required Dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-## Configuration
-
-In the `new_attempt.py` file, you can adjust the following configuration parameters at the top:
-
-- **POSTED_FILTER:**  
-  Currently set to `"Anytime"`. Change to `"Last 7 days"` for weekly automation of recent postings.
-- **KEYWORDS:**  
-  The search keywords (e.g., `(Master) OR (PhD) OR (Graduate) OR (MS)`).
-- **MAX_PAGES:**  
-  Set to an integer during testing to limit the number of pages; set to `None` to scrape all available pages.
+3. (Optional) Set up environment variables:
+```bash
+cp .env.example .env
+# Edit .env with your preferred settings
+```
 
 ## Usage
 
-### Running Locally
+### Command Line Interface
 
-Run the scraper locally with:
+Basic usage:
 ```bash
-python new_attempt.py
-```
-The scraper will produce a CSV file named `job_listings.csv` containing the scraped job details and a log file (`scraper.log`) with detailed execution logs.
-
-## GitHub Actions (Weekly Automation)
-
-A GitHub Actions workflow is configured to run the scraper on a weekly schedule. The workflow file is located at `.github/workflows/weekly_scrape.yml`. This workflow:
-
-- Sets up Python (using Python 3.12.7).
-- Installs the required dependencies.
-- Runs the scraper script.
-
-### Example Workflow File (`.github/workflows/weekly_scrape.yml`)
-
-```yaml
-name: Weekly Job Scraper
-
-on:
-  schedule:
-    - cron: '0 0 * * 0'  # Every Sunday at midnight UTC
-  workflow_dispatch:   # Allows manual triggering
-
-jobs:
-  scrape:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12.7'
-
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Run Scraper
-        run: |
-          python new_attempt.py
+python cli.py
 ```
 
-## Logging & Error Notifications
+With custom parameters:
+```bash
+python cli.py --keywords "ecology OR conservation" --output-dir results --verbose
+```
 
-The scraper uses Python’s `logging` module to write logs both to the console and to a file (`scraper.log`). In the main entry point, errors are caught and logged. For future enhancements, you can integrate an alert system (such as sending an email or Slack notification) to notify you if the scraping or processing fails.
+Available options:
+```bash
+python cli.py --help
+```
 
-## Future Enhancements
+### Python API
 
-- **Deduplication:**  
-  Compare new job postings against an existing master list (by job ID) and append only new jobs.
-- **Data Enrichment:**  
-  Add cost-of-living conversions and use NLP (e.g., via spaCy or NLTK) for categorizing grad assistantship positions.
-- **Dashboard/Interactive Website:**  
-  Build an interactive dashboard with Streamlit, Dash, or host a static site on GitHub Pages to visualize the data.
+```python
+from wildlife_job_scraper import ScraperConfig, WildlifeJobScraper
+
+# Create configuration
+config = ScraperConfig(
+    keywords="(Master) OR (PhD) OR (Graduate)",
+    headless=True,
+    output_dir=Path("data")
+)
+
+# Initialize scraper
+scraper = WildlifeJobScraper(config)
+
+# Scrape jobs
+jobs = scraper.scrape_all_jobs()
+
+# Save results
+scraper.save_jobs_json(jobs)
+scraper.save_jobs_csv(jobs)
+```
+
+## Configuration
+
+### Environment Variables
+
+Create a `.env` file (see `.env.example`) with the following optional variables:
+
+- `JOB_SEARCH_URL`: Target job board URL
+- `SEARCH_KEYWORDS`: Search terms for filtering
+- `OUTPUT_DIR`: Directory for output files
+- `MIN_DELAY`: Minimum delay between actions (seconds)
+- `MAX_DELAY`: Maximum delay between actions (seconds)
+- `HEADLESS`: Run browser in headless mode (true/false)
+
+### Configuration Parameters
+
+The `ScraperConfig` class accepts the following parameters:
+
+- `base_url`: Job board URL (default: Texas A&M site)
+- `keywords`: Search keywords for filtering jobs
+- `output_dir`: Directory for saving results
+- `page_size`: Number of results per page (max 50)
+- `min_delay`/`max_delay`: Random delay range for human-like behavior
+- `timeout`: Element wait timeout in seconds
+- `headless`: Run browser without GUI
+
+## Output
+
+The scraper generates two output files:
+
+### JSON Format (`graduate_assistantships.json`)
+```json
+[
+  {
+    "title": "Graduate Research Assistant",
+    "organization": "University of Texas",
+    "location": "Austin, TX",
+    "salary": "$25,000/year",
+    "starting_date": "Fall 2024",
+    "published_date": "2024-01-15",
+    "tags": "Research, Wildlife"
+  }
+]
+```
+
+### CSV Format (`graduate_assistantships.csv`)
+Tabular format suitable for analysis in Excel, R, or Python pandas.
+
+## Testing
+
+Run the test suite:
+```bash
+pytest tests/ -v
+```
+
+Run with coverage:
+```bash
+pytest tests/ --cov=wildlife_job_scraper --cov-report=html
+```
+
+## Development
+
+### Code Quality
+
+The project follows these standards:
+- **PEP 8** formatting with Black
+- **Type hints** throughout
+- **Google-style docstrings**
+- **Pydantic models** for data validation
+- **Comprehensive logging**
+- **Unit tests** with pytest
+
+### Adding Features
+
+1. Create a feature branch
+2. Add your changes with appropriate tests
+3. Ensure all tests pass
+4. Submit a pull request
+
+## Ethical Considerations
+
+This scraper is designed for academic research and follows ethical web scraping practices:
+
+- **Respectful delays** between requests
+- **User-agent rotation** to avoid overwhelming servers
+- **Compliance with robots.txt** (when applicable)
+- **Rate limiting** to prevent server overload
+- **Data privacy** considerations for research use
+
+## Troubleshooting
+
+### Common Issues
+
+1. **ChromeDriver not found**: The scraper uses `webdriver-manager` to automatically download ChromeDriver. Ensure you have Chrome installed.
+
+2. **Connection timeouts**: Increase the `timeout` parameter or check your internet connection.
+
+3. **No jobs found**: Verify the search keywords and ensure the target website is accessible.
+
+4. **Permission errors**: Check that the output directory is writable.
+
+### Debug Mode
+
+Run with visible browser for debugging:
+```bash
+python cli.py --no-headless --verbose
+```
+
+## Dependencies
+
+- `selenium`: Web browser automation
+- `pandas`: Data manipulation and analysis
+- `pydantic`: Data validation and parsing
+- `beautifulsoup4`: HTML parsing (if needed)
+- `python-dotenv`: Environment variable management
+- `fake-useragent`: User agent rotation
+- `webdriver-manager`: Automatic ChromeDriver management
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is intended for academic research purposes. Please ensure compliance with the target website's terms of service and applicable laws.
 
-## Contact
+## Contributing
 
-For questions or contributions, please contact [your_email@example.com](mailto:your_email@example.com).
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Ensure all tests pass
+5. Submit a pull request
+
+## Support
+
+For issues and questions:
+1. Check the troubleshooting section
+2. Review existing issues
+3. Create a new issue with detailed information
