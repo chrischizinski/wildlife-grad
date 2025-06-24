@@ -130,8 +130,9 @@ jobs:
         else
           # Create commit message with job statistics
           job_count=$(find data -name "*.json" -exec grep -l "graduate" {} \; 2>/dev/null | wc -l || echo "0")
-          commit_msg="🤖 Weekly wildlife job scrape - $(date +'%Y-%m-%d %H:%M UTC')
           
+          git commit -m "🤖 Weekly wildlife job scrape - $(date +'%Y-%m-%d %H:%M UTC')
+
 📊 Scraping Summary:
 - Data files processed: ${job_count}
 - Timestamp: $(date +'%Y-%m-%d %H:%M:%S UTC')
@@ -139,14 +140,12 @@ jobs:
 - Big 10 university classification included
 
 🔄 Auto-deployed to GitHub Pages"
-          
-          git commit -m "$commit_msg"
           git push origin main
           echo "Changes committed and pushed to main branch"
         fi
         
     - name: 🚀 Deploy Dashboard to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       if: success()
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -155,7 +154,7 @@ jobs:
         force_orphan: true
         user_name: '🤖 Wildlife Dashboard Bot'
         user_email: 'action@github.com'
-        commit_message: '🚀 Deploy wildlife analytics dashboard - ${{ github.event.head_commit.message }}'
+        commit_message: '🚀 Deploy wildlife analytics dashboard'
         
     - name: 📈 Report Success
       if: success()
