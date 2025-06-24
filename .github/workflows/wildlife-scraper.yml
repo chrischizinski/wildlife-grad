@@ -36,10 +36,15 @@ jobs:
     - name: 🌐 Install Chrome Browser
       uses: browser-actions/setup-chrome@latest
       
-    - name: 🚗 Install ChromeDriver
-      uses: nanasess/setup-chromedriver@master
-      with:
-        chromedriver-version: 'latest'
+    - name: 🚗 Setup ChromeDriver & Display
+      run: |
+        # Set up virtual display for headless Chrome
+        sudo apt-get update
+        sudo apt-get install -y xvfb
+        export DISPLAY=:99
+        Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+        echo "Virtual display configured for headless Chrome"
+        echo "ChromeDriver will be automatically managed by webdriver-manager"
       
     - name: 📦 Install Python dependencies
       run: |
