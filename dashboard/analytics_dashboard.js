@@ -113,6 +113,7 @@ class AnalyticsDashboard {
         this.renderMarketInsights();
         this.renderOrganizationsChart();
         this.updateFooter();
+        this.updateFilterStatus(); // Update filter status and Big 10 count
         this.fixHeaderColors();
     }
     
@@ -1146,16 +1147,133 @@ class AnalyticsDashboard {
         // Refresh button
         document.getElementById('refresh-data').addEventListener('click', () => this.refreshData());
         
-        // Big 10 toggle
+        // Enhanced Big 10 toggle with better UX
         document.getElementById('big10-toggle').addEventListener('change', (e) => {
-            this.data.showBig10Only = e.target.checked;
-            this.refreshDashboard();
+            const isChecked = e.target.checked;
+            this.data.showBig10Only = isChecked;
+            
+            // Add visual feedback during filter change
+            this.showFilteringIndicator();
+            
+            // Debounced update for better performance
+            clearTimeout(this.filterTimeout);
+            this.filterTimeout = setTimeout(() => {
+                this.refreshDashboard();
+                this.updateFilterStatus();
+                this.hideFilteringIndicator();
+                
+                // Show success toast
+                this.showFilterToast(isChecked);
+            }, 150);
         });
     }
     
     refreshDashboard() {
         // Re-render all components with current filter settings
         this.renderDashboard();
+    }
+    
+    showFilteringIndicator() {
+        // Add pulsing animation to toggle button
+        const toggleLabel = document.querySelector('label[for="big10-toggle"]');
+        if (toggleLabel) {
+            toggleLabel.style.opacity = '0.6';
+            toggleLabel.style.transition = 'opacity 0.2s ease';
+        }
+    }
+    
+    hideFilteringIndicator() {
+        const toggleLabel = document.querySelector('label[for="big10-toggle"]');
+        if (toggleLabel) {
+            toggleLabel.style.opacity = '1';
+        }
+    }
+    
+    showFilterToast(isBig10Only) {
+        // Create a subtle toast notification
+        const toast = document.createElement('div');
+        toast.className = 'position-fixed top-0 start-50 translate-middle-x mt-2';
+        toast.style.zIndex = '9999';
+        toast.innerHTML = `
+            <div class="alert alert-${isBig10Only ? 'warning' : 'info'} alert-dismissible fade show shadow-sm" role="alert" style="min-width: 300px;">
+                <i class="fas fa-${isBig10Only ? 'university' : 'globe'} me-2"></i>
+                <strong>${isBig10Only ? 'Big 10 Filter Active' : 'Showing All Universities'}</strong>
+                <br><small class="text-muted">
+                    ${isBig10Only ? 'Displaying only Big 10 university positions' : 'Displaying positions from all universities'}
+                </small>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Auto-remove after 3 seconds
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+    
+    updateFilterStatus() {
+        // Update header status to show current filter
+        const jobs = this.getFilteredJobs();
+        const allJobs = this.data.jobs;
+        const statusElement = document.getElementById('total-positions');
+        const subtitle = document.querySelector('.analytics-header-card p.text-muted');
+        
+        if (statusElement) {
+            const count = jobs.length;
+            statusElement.textContent = count.toLocaleString();
+        }
+        
+        if (subtitle) {
+            const filterText = this.data.showBig10Only ? ' • Big 10 universities only' : '';
+            const baseText = `Last ${this.data.currentPeriod} months • Last updated: ${new Date().toLocaleDateString()}`;
+            subtitle.innerHTML = `<span>${baseText}${filterText}</span>`;
+        }
+        
+        // Update Big 10 count badge
+        const big10Count = this.filterJobsByBig10(allJobs, true).length;
+        const countBadge = document.getElementById('big10-count');
+        if (countBadge) {
+            countBadge.textContent = big10Count;
+            countBadge.style.display = big10Count > 0 ? 'inline' : 'none';
+        }
+        
+        // Update toggle button appearance when active
+        const toggleLabel = document.querySelector('label[for="big10-toggle"]');
+        if (toggleLabel) {
+            if (this.data.showBig10Only) {
+                toggleLabel.classList.add('active');
+                toggleLabel.style.backgroundColor = '#fbbf24';
+                toggleLabel.style.borderColor = '#fbbf24';
+                toggleLabel.style.color = '#111827';
+                toggleLabel.style.transform = 'scale(1.05)';
+                toggleLabel.style.transition = 'all 0.2s ease';
+            } else {
+                toggleLabel.classList.remove('active');
+                toggleLabel.style.backgroundColor = '';
+                toggleLabel.style.borderColor = '';
+                toggleLabel.style.color = '';
+                toggleLabel.style.transform = '';
+            }
+        }
+        
+        // Show/hide filter info panel
+        const filterPanel = document.getElementById('filter-info-panel');
+        if (filterPanel) {
+            if (this.data.showBig10Only) {
+                filterPanel.style.display = 'block';
+                // Add smooth slide-in animation
+                filterPanel.style.opacity = '0';
+                filterPanel.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    filterPanel.style.transition = 'all 0.3s ease';
+                    filterPanel.style.opacity = '1';
+                    filterPanel.style.transform = 'translateY(0)';
+                }, 10);
+            } else {
+                filterPanel.style.display = 'none';
+            }
+        }
     }
     
     updateTrendsChart() {

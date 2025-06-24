@@ -48,6 +48,22 @@
         <div id="main-content" class="d-none">
             <!-- Header Stats Banner -->
             <section id="overview" class="mb-4">
+                <!-- Filter Info Panel (shown when Big 10 filter is active) -->
+                <div id="filter-info-panel" class="alert alert-warning border-start border-warning border-4 mb-3" style="display: none;">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-university me-3 mt-1"></i>
+                        <div>
+                            <h6 class="alert-heading mb-1">Big 10 Conference Filter Active</h6>
+                            <p class="mb-0 small">
+                                Showing positions only at Big 10 universities: Illinois, Indiana, Iowa, Maryland, Michigan, 
+                                Michigan State, Minnesota, Nebraska, Northwestern, Ohio State, Penn State, Purdue, Rutgers, 
+                                UCLA, USC, Washington, Wisconsin, and Oregon.
+                            </p>
+                        </div>
+                        <button type="button" class="btn-close btn-sm ms-auto" onclick="document.getElementById('big10-toggle').click()"></button>
+                    </div>
+                </div>
+                
                 <div class="row">
                     <div class="col-12">
                         <div class="analytics-header-card">
@@ -61,11 +77,23 @@
                                     </p>
                                 </div>
                                 <div class="col-md-4 text-md-end">
-                                    <div class="btn-group me-2">
-                                        <input type="checkbox" class="btn-check" id="big10-toggle" autocomplete="off">
-                                        <label class="btn btn-outline-warning btn-sm" for="big10-toggle">
-                                            <i class="fas fa-university me-1"></i>Big 10 Only
-                                        </label>
+                                    <div class="d-flex align-items-center justify-content-end gap-2">
+                                        <small class="text-muted fw-medium">Filter by:</small>
+                                        <div class="btn-group me-2">
+                                            <input type="checkbox" class="btn-check" id="big10-toggle" autocomplete="off">
+                                            <label class="btn btn-outline-warning btn-sm position-relative" for="big10-toggle" 
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="bottom" 
+                                                   data-bs-title="Toggle to show only positions at Big 10 Conference universities (18 schools including Michigan, Ohio State, Penn State, etc.)">
+                                                <i class="fas fa-university me-1"></i>
+                                                <span class="d-none d-md-inline">Big 10 Universities</span>
+                                                <span class="d-inline d-md-none">Big 10</span>
+                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark" 
+                                                      id="big10-count" style="font-size: 0.65rem; display: none;">
+                                                    0
+                                                </span>
+                                            </label>
+                                        </div>
                                     </div>
                                     <div class="btn-group">
                                         <button class="btn btn-outline-primary btn-sm" id="refresh-data">
