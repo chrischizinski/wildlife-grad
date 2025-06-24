@@ -1,0 +1,172 @@
+name: 🐾 Wildlife Graduate Assistantship Scraper & Dashboard
+
+on:
+  schedule:
+    # Weekly on Sundays at 6:00 AM UTC (1:00 AM EST / 12:00 AM CST)
+    - cron: '0 6 * * 0'
+  workflow_dispatch: # Allow manual trigger for testing
+  push:
+    branches: [ main ]
+    paths: 
+      - 'dashboard/**'
+      - 'wildlife_job_scraper.py'
+      - 'scripts/**'
+
+jobs:
+  scrape-and-deploy:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    
+    steps:
+    - name: 📥 Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+    
+    - name: 🐍 Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: 🌐 Install Chrome Browser
+      uses: browser-actions/setup-chrome@latest
+      
+    - name: 🚗 Install ChromeDriver
+      uses: nanasess/setup-chromedriver@master
+      with:
+        chromedriver-version: 'latest'
+      
+    - name: 📦 Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install selenium beautifulsoup4 pydantic requests pandas
+        echo "Dependencies installed successfully"
+        
+    - name: 📁 Create data directories
+      run: |
+        mkdir -p data/archive
+        mkdir -p dashboard/data
+        echo "Data directories created"
+        
+    - name: 🔍 Run wildlife job scraper
+      run: |
+        echo "Starting wildlife job scraper..."
+        python wildlife_job_scraper.py
+        echo "Scraping completed successfully"
+        
+    - name: 📊 Generate enhanced analysis
+      run: |
+        if [ -f "scripts/enhanced_analysis.py" ]; then
+          echo "Generating enhanced analysis..."
+          python scripts/enhanced_analysis.py
+        else
+          echo "Enhanced analysis script not found, skipping..."
+        fi
+        
+    - name: 📈 Generate dashboard data
+      run: |
+        if [ -f "scripts/enhanced_dashboard_data.py" ]; then
+          echo "Generating dashboard data..."
+          python scripts/enhanced_dashboard_data.py
+        else
+          echo "Dashboard data script not found, skipping..."
+        fi
+        
+    - name: 📋 Copy data to dashboard directory
+      run: |
+        # Copy main data files to dashboard directory for GitHub Pages
+        if [ -f "data/verified_graduate_assistantships.json" ]; then
+          cp data/verified_graduate_assistantships.json dashboard/
+          echo "Copied verified graduate assistantships data"
+        fi
+        
+        if [ -f "data/enhanced_data.json" ]; then
+          cp data/enhanced_data.json dashboard/
+          echo "Copied enhanced data"
+        fi
+        
+        if [ -f "data/graduate_assistantships.json" ]; then
+          cp data/graduate_assistantships.json dashboard/export_data.json
+          echo "Copied export data"
+        fi
+        
+        echo "Dashboard data files ready"
+        
+    - name: 🗄️ Archive data with timestamp
+      run: |
+        timestamp=$(date +"%Y%m%d_%H%M%S")
+        
+        # Archive main data files
+        if [ -f "data/graduate_assistantships.json" ]; then
+          cp data/graduate_assistantships.json "data/archive/jobs_${timestamp}.json"
+        fi
+        
+        if [ -f "data/graduate_assistantships.csv" ]; then
+          cp data/graduate_assistantships.csv "data/archive/jobs_${timestamp}.csv"
+        fi
+        
+        if [ -f "data/enhanced_data.json" ]; then
+          cp data/enhanced_data.json "data/archive/enhanced_${timestamp}.json"
+        fi
+        
+        echo "Data archived with timestamp: ${timestamp}"
+        
+    - name: 📝 Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "🤖 Wildlife Scraper Bot"
+        
+        # Add all changes
+        git add .
+        
+        # Check if there are changes to commit
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          # Create commit message with job statistics
+          job_count=$(find data -name "*.json" -exec grep -l "graduate" {} \; 2>/dev/null | wc -l || echo "0")
+          commit_msg="🤖 Weekly wildlife job scrape - $(date +'%Y-%m-%d %H:%M UTC')
+          
+📊 Scraping Summary:
+- Data files processed: ${job_count}
+- Timestamp: $(date +'%Y-%m-%d %H:%M:%S UTC')
+- Dashboard updated with latest analytics
+- Big 10 university classification included
+
+🔄 Auto-deployed to GitHub Pages"
+          
+          git commit -m "$commit_msg"
+          git push origin main
+          echo "Changes committed and pushed to main branch"
+        fi
+        
+    - name: 🚀 Deploy Dashboard to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: success()
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dashboard
+        publish_branch: gh-pages
+        force_orphan: true
+        user_name: '🤖 Wildlife Dashboard Bot'
+        user_email: 'action@github.com'
+        commit_message: '🚀 Deploy wildlife analytics dashboard - ${{ github.event.head_commit.message }}'
+        
+    - name: 📈 Report Success
+      if: success()
+      run: |
+        echo "✅ Wildlife Graduate Assistantship Scraper completed successfully!"
+        echo "📊 Dashboard deployed to GitHub Pages"
+        echo "🔗 Available at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+        
+    - name: 🚨 Report Failure
+      if: failure()
+      run: |
+        echo "❌ Wildlife scraper failed!"
+        echo "Check the logs above for detailed error information"
+        exit 1
