@@ -10,7 +10,9 @@ import logging
 import os
 import random
 import time
+import uuid
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 from urllib.parse import quote
@@ -86,6 +88,11 @@ class JobListing(BaseModel):
     is_big10_university: bool = Field(default=False, description="Position at Big 10 university")
     university_name: str = Field(default="", description="Standardized university name")
     
+    # Scraping metadata
+    scraped_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat(), description="Timestamp when job was scraped")
+    scrape_run_id: str = Field(default="", description="Unique identifier for this scraping session")
+    scraper_version: str = Field(default="2.0", description="Version of scraper used")
+    
     @field_validator('title')
     @classmethod
     def title_must_not_be_empty(cls, v):
@@ -108,6 +115,7 @@ class WildlifeJobScraper:
         self.config = config
         self.driver: Optional[webdriver.Chrome] = None
         self.ua = UserAgent()
+        self.scrape_run_id: str = ""  # Will be set by main() function
         self._setup_logging()
         
     def _setup_logging(self) -> None:
@@ -349,7 +357,8 @@ class WildlifeJobScraper:
                 starting_date=starting_date,
                 published_date=published_date,
                 tags=tags,
-                url=job_url
+                url=job_url,
+                scrape_run_id=self.scrape_run_id
             )
             
         except Exception as e:
@@ -1219,10 +1228,15 @@ class WildlifeJobScraper:
 def main() -> None:
     """Main entry point for the enhanced scraper."""
     try:
+        # Generate unique run ID for this scraping session
+        run_id = f"scrape_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}_{str(uuid.uuid4())[:8]}"
+        
         config = ScraperConfig()
         scraper = WildlifeJobScraper(config)
+        scraper.scrape_run_id = run_id
         
-        print("Starting enhanced wildlife job scraping with detailed analysis...")
+        print(f"Starting enhanced wildlife job scraping with detailed analysis...")
+        print(f"Scrape Run ID: {run_id}")
         jobs = scraper.scrape_all_jobs()
         
         if jobs:
