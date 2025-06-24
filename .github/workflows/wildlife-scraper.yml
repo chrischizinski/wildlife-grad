@@ -44,7 +44,7 @@ jobs:
     - name: 📦 Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install selenium beautifulsoup4 pydantic requests pandas
+        pip install -r requirements.txt
         echo "Dependencies installed successfully"
         
     - name: 📁 Create data directories
