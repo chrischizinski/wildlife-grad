@@ -131,7 +131,9 @@ jobs:
           # Create commit message with job statistics
           job_count=$(find data -name "*.json" -exec grep -l "graduate" {} \; 2>/dev/null | wc -l || echo "0")
           
-          git commit -m "🤖 Weekly wildlife job scrape - $(date +'%Y-%m-%d %H:%M UTC')
+          # Use heredoc for multiline commit message
+          git commit -m "$(cat <<EOF
+🤖 Weekly wildlife job scrape - $(date +'%Y-%m-%d %H:%M UTC')
 
 📊 Scraping Summary:
 - Data files processed: ${job_count}
@@ -139,7 +141,9 @@ jobs:
 - Dashboard updated with latest analytics
 - Big 10 university classification included
 
-🔄 Auto-deployed to GitHub Pages"
+🔄 Auto-deployed to GitHub Pages
+EOF
+)"
           git push origin main
           echo "Changes committed and pushed to main branch"
         fi
