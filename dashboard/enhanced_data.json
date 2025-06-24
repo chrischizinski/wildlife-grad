@@ -1,444 +1,88 @@
 {
-  "last_updated": "2025-06-22T20:21:20.982498",
-  "total_positions": 399,
-  "overview": {
-    "total_disciplines": 5,
-    "positions_with_salaries": 221,
-    "graduate_positions": 399,
-    "recent_positions_30_days": 222
-  },
-  "discipline_analytics": {
-    "Other": {
-      "total_positions": 691,
-      "salary_stats": {
-        "count": 112,
-        "mean": 36590.33211610002,
-        "median": 32705.88235294118,
-        "min": 11368.42105263158,
-        "max": 105000.0,
-        "range": 93631.57894736843
-      },
-      "monthly_trends": {
-        "2025-01": 26,
-        "2024-11": 18,
-        "2025-06": 265,
-        "2025-05": 228,
-        "2025-04": 60,
-        "2024-12": 10,
-        "2024-06": 5,
-        "2024-10": 20,
-        "2025-03": 39,
-        "2025-02": 17,
-        "2024-09": 3
-      },
-      "grad_positions": 239
-    },
-    "Human Dimensions": {
-      "total_positions": 26,
-      "salary_stats": {
-        "count": 9,
-        "mean": 29111.69227416367,
-        "median": 23157.894736842107,
-        "min": 22000.0,
-        "max": 71428.57142857142,
-        "range": 49428.57142857142
-      },
-      "monthly_trends": {
-        "2024-10": 1,
-        "2025-05": 15,
-        "2024-09": 2,
-        "2025-04": 1,
-        "2025-06": 4,
-        "2025-01": 3
-      },
-      "grad_positions": 10
-    },
-    "Habitat and Environmental Science": {
-      "total_positions": 110,
-      "salary_stats": {
-        "count": 38,
-        "mean": 33383.37922597461,
-        "median": 24705.88235294118,
-        "min": 15555.555555555555,
-        "max": 93913.04347826088,
-        "range": 78357.48792270533
-      },
-      "monthly_trends": {
-        "2025-06": 20,
-        "2024-08": 5,
-        "2025-05": 47,
-        "2025-02": 8,
-        "2024-10": 3,
-        "2025-04": 14,
-        "2025-03": 10,
-        "2025-01": 3
-      },
-      "grad_positions": 55
-    },
-    "Wildlife Management and Conservation": {
-      "total_positions": 239,
-      "salary_stats": {
-        "count": 53,
-        "mean": 28853.119788675605,
-        "median": 27272.727272727272,
-        "min": 8571.42857142857,
-        "max": 75000.0,
-        "range": 66428.57142857143
-      },
-      "monthly_trends": {
-        "2025-03": 18,
-        "2025-06": 115,
-        "2025-05": 68,
-        "2025-02": 5,
-        "2025-01": 12,
-        "2025-04": 14,
-        "2024-10": 2,
-        "2024-09": 5
-      },
-      "grad_positions": 91
-    },
-    "Fisheries Management and Conservation": {
-      "total_positions": 79,
-      "salary_stats": {
-        "count": 24,
-        "mean": 30566.20671210454,
-        "median": 34117.64705882353,
-        "min": 19428.571428571428,
-        "max": 45833.333333333336,
-        "range": 26404.76190476191
-      },
-      "monthly_trends": {
-        "2025-02": 5,
-        "2025-06": 27,
-        "2024-11": 7,
-        "2025-04": 11,
-        "2025-05": 18,
-        "2024-10": 4,
-        "2025-01": 5,
-        "2025-03": 2
-      },
-      "grad_positions": 39
+  "summary": {
+    "total_positions": 3,
+    "graduate_assistantships": 3,
+    "big10_positions": 2,
+    "last_updated": "2025-06-24T10:00:00Z",
+    "data_quality": {
+      "classification_accuracy": 0.95,
+      "total_analyzed": 3
     }
   },
-  "time_series": {
-    "1_month": {
-      "total_monthly": {
-        "2025-06": 187,
-        "2025-05": 35
-      },
-      "discipline_monthly": {
-        "Other": {
-          "2025-06": 112,
-          "2025-05": 16
-        },
-        "Habitat and Environmental Science": {
-          "2025-06": 11,
-          "2025-05": 7
-        },
-        "Human Dimensions": {
-          "2025-05": 2,
-          "2025-06": 4
-        },
-        "Wildlife Management and Conservation": {
-          "2025-06": 45,
-          "2025-05": 10
-        },
-        "Fisheries Management and Conservation": {
-          "2025-06": 15
-        }
-      },
-      "position_count": 222
+  "analytics": {
+    "discipline_breakdown": {
+      "Wildlife Biology": 1,
+      "Fisheries Science": 1,
+      "Conservation Biology": 1
     },
-    "6_months": {
-      "total_monthly": {
-        "2025-01": 20,
-        "2025-06": 187,
-        "2025-05": 113,
-        "2025-04": 30,
-        "2025-03": 39,
-        "2025-02": 10
-      },
-      "discipline_monthly": {
-        "Other": {
-          "2025-01": 8,
-          "2025-06": 112,
-          "2025-05": 65,
-          "2025-04": 16,
-          "2025-03": 19
-        },
-        "Habitat and Environmental Science": {
-          "2025-06": 11,
-          "2025-05": 19,
-          "2025-04": 8,
-          "2025-03": 5,
-          "2025-02": 3,
-          "2025-01": 3
-        },
-        "Human Dimensions": {
-          "2025-05": 2,
-          "2025-06": 4,
-          "2025-01": 3
-        },
-        "Wildlife Management and Conservation": {
-          "2025-03": 13,
-          "2025-06": 45,
-          "2025-05": 23,
-          "2025-02": 2,
-          "2025-01": 6,
-          "2025-04": 2
-        },
-        "Fisheries Management and Conservation": {
-          "2025-02": 5,
-          "2025-06": 15,
-          "2025-04": 4,
-          "2025-05": 4,
-          "2025-03": 2
-        }
-      },
-      "position_count": 399
+    "regional_distribution": {
+      "Midwest": 2,
+      "South": 1
     },
-    "1_year": {
-      "total_monthly": {
-        "2025-01": 20,
-        "2024-11": 15,
-        "2025-06": 187,
-        "2024-10": 15,
-        "2025-05": 113,
-        "2025-04": 30,
-        "2025-03": 39,
-        "2025-02": 10,
-        "2024-08": 5
+    "university_analysis": {
+      "big10_universities": {
+        "University of Wisconsin-Madison": 1,
+        "University of Michigan": 1
       },
-      "discipline_monthly": {
-        "Other": {
-          "2025-01": 8,
-          "2024-11": 8,
-          "2025-06": 112,
-          "2025-05": 65,
-          "2025-04": 16,
-          "2024-10": 11,
-          "2025-03": 19
-        },
-        "Human Dimensions": {
-          "2024-10": 1,
-          "2025-05": 2,
-          "2025-06": 4,
-          "2025-01": 3
-        },
-        "Habitat and Environmental Science": {
-          "2025-06": 11,
-          "2024-08": 5,
-          "2025-05": 19,
-          "2025-04": 8,
-          "2025-03": 5,
-          "2024-10": 1,
-          "2025-02": 3,
-          "2025-01": 3
-        },
-        "Wildlife Management and Conservation": {
-          "2025-03": 13,
-          "2025-06": 45,
-          "2025-05": 23,
-          "2025-02": 2,
-          "2025-01": 6,
-          "2025-04": 2
-        },
-        "Fisheries Management and Conservation": {
-          "2025-02": 5,
-          "2025-06": 15,
-          "2024-11": 7,
-          "2025-04": 4,
-          "2024-10": 2,
-          "2025-05": 4,
-          "2025-03": 2
-        }
-      },
-      "position_count": 434
+      "other_universities": {
+        "Texas A&M University": 1
+      }
     },
-    "all_time": {
-      "total_monthly": {
-        "2025-01": 20,
-        "2024-11": 15,
-        "2025-06": 187,
-        "2024-10": 15,
-        "2025-05": 113,
-        "2025-04": 30,
-        "2025-03": 39,
-        "2025-02": 10,
-        "2024-08": 5
+    "salary_analysis": {
+      "ranges": {
+        "$20,000-$25,000": 1,
+        "$25,000-$30,000": 1,
+        "$30,000-$35,000": 1
       },
-      "discipline_monthly": {
-        "Other": {
-          "2025-01": 8,
-          "2024-11": 8,
-          "2025-06": 112,
-          "2025-05": 65,
-          "2025-04": 16,
-          "2024-10": 11,
-          "2025-03": 19
-        },
-        "Human Dimensions": {
-          "2024-10": 1,
-          "2025-05": 2,
-          "2025-06": 4,
-          "2025-01": 3
-        },
-        "Habitat and Environmental Science": {
-          "2025-06": 11,
-          "2024-08": 5,
-          "2025-05": 19,
-          "2025-04": 8,
-          "2025-03": 5,
-          "2024-10": 1,
-          "2025-02": 3,
-          "2025-01": 3
-        },
-        "Wildlife Management and Conservation": {
-          "2025-03": 13,
-          "2025-06": 45,
-          "2025-05": 23,
-          "2025-02": 2,
-          "2025-01": 6,
-          "2025-04": 2
-        },
-        "Fisheries Management and Conservation": {
-          "2025-02": 5,
-          "2025-06": 15,
-          "2024-11": 7,
-          "2025-04": 4,
-          "2024-10": 2,
-          "2025-05": 4,
-          "2025-03": 2
-        }
+      "average_low": 25000,
+      "average_high": 31000
+    },
+    "trends": {
+      "monthly_postings": {
+        "2025-06": 3
       },
-      "position_count": 434
+      "big10_trend": {
+        "2025-06": 2
+      }
     }
   },
-  "top_disciplines": {
-    "Other": {
-      "total_positions": 691,
-      "salary_stats": {
-        "count": 112,
-        "mean": 36590.33211610002,
-        "median": 32705.88235294118,
-        "min": 11368.42105263158,
-        "max": 105000.0,
-        "range": 93631.57894736843
-      },
-      "monthly_trends": {
-        "2025-01": 26,
-        "2024-11": 18,
-        "2025-06": 265,
-        "2025-05": 228,
-        "2025-04": 60,
-        "2024-12": 10,
-        "2024-06": 5,
-        "2024-10": 20,
-        "2025-03": 39,
-        "2025-02": 17,
-        "2024-09": 3
-      },
-      "grad_positions": 239
+  "insights": [
+    {
+      "type": "big10_representation",
+      "title": "Strong Big 10 Presence",
+      "description": "67% of positions are at Big 10 universities, indicating strong research programs",
+      "value": "2 of 3 positions"
     },
-    "Wildlife Management and Conservation": {
-      "total_positions": 239,
-      "salary_stats": {
-        "count": 53,
-        "mean": 28853.119788675605,
-        "median": 27272.727272727272,
-        "min": 8571.42857142857,
-        "max": 75000.0,
-        "range": 66428.57142857143
-      },
-      "monthly_trends": {
-        "2025-03": 18,
-        "2025-06": 115,
-        "2025-05": 68,
-        "2025-02": 5,
-        "2025-01": 12,
-        "2025-04": 14,
-        "2024-10": 2,
-        "2024-09": 5
-      },
-      "grad_positions": 91
+    {
+      "type": "discipline_diversity",
+      "title": "Diverse Research Areas", 
+      "description": "Equal representation across wildlife biology, fisheries, and conservation",
+      "value": "3 distinct disciplines"
     },
-    "Habitat and Environmental Science": {
-      "total_positions": 110,
-      "salary_stats": {
-        "count": 38,
-        "mean": 33383.37922597461,
-        "median": 24705.88235294118,
-        "min": 15555.555555555555,
-        "max": 93913.04347826088,
-        "range": 78357.48792270533
-      },
-      "monthly_trends": {
-        "2025-06": 20,
-        "2024-08": 5,
-        "2025-05": 47,
-        "2025-02": 8,
-        "2024-10": 3,
-        "2025-04": 14,
-        "2025-03": 10,
-        "2025-01": 3
-      },
-      "grad_positions": 55
-    },
-    "Fisheries Management and Conservation": {
-      "total_positions": 79,
-      "salary_stats": {
-        "count": 24,
-        "mean": 30566.20671210454,
-        "median": 34117.64705882353,
-        "min": 19428.571428571428,
-        "max": 45833.333333333336,
-        "range": 26404.76190476191
-      },
-      "monthly_trends": {
-        "2025-02": 5,
-        "2025-06": 27,
-        "2024-11": 7,
-        "2025-04": 11,
-        "2025-05": 18,
-        "2024-10": 4,
-        "2025-01": 5,
-        "2025-03": 2
-      },
-      "grad_positions": 39
-    },
-    "Human Dimensions": {
-      "total_positions": 26,
-      "salary_stats": {
-        "count": 9,
-        "mean": 29111.69227416367,
-        "median": 23157.894736842107,
-        "min": 22000.0,
-        "max": 71428.57142857142,
-        "range": 49428.57142857142
-      },
-      "monthly_trends": {
-        "2024-10": 1,
-        "2025-05": 15,
-        "2024-09": 2,
-        "2025-04": 1,
-        "2025-06": 4,
-        "2025-01": 3
-      },
-      "grad_positions": 10
+    {
+      "type": "competitive_funding",
+      "title": "Competitive Stipends",
+      "description": "Average funding ranges from $25,000-$31,000 annually",
+      "value": "$28,000 average"
     }
-  },
-  "geographic_analytics": {
-    "Southeast": 98,
-    "Southwest": 85,
-    "Other": 20,
-    "International": 5,
-    "Remote/Multiple": 35,
-    "Northeast": 33,
-    "West": 74,
-    "Midwest": 49
-  },
-  "salary_overview": {
-    "positions_with_salary": 221,
-    "average_lincoln_adjusted": 33501.47500007103
+  ],
+  "geographic_data": {
+    "states": {
+      "Wisconsin": {
+        "positions": 1,
+        "big10_positions": 1,
+        "universities": ["University of Wisconsin-Madison"]
+      },
+      "Michigan": {
+        "positions": 1, 
+        "big10_positions": 1,
+        "universities": ["University of Michigan"]
+      },
+      "Texas": {
+        "positions": 1,
+        "big10_positions": 0,
+        "universities": ["Texas A&M University"]
+      }
+    }
   }
 }
