@@ -5,6 +5,7 @@
     "organization": "University of Wisconsin-Madison",
     "location": "Madison, WI",
     "discipline": "Wildlife Biology",
+    "discipline_primary": "Wildlife Biology",
     "description": "Research position focusing on deer population dynamics",
     "degree_requirements": "M.S. in Wildlife Biology",
     "is_graduate_assistantship": true,
@@ -12,7 +13,12 @@
     "is_big10_university": true,
     "university_name": "University of Wisconsin-Madison",
     "posted_date": "2025-06-20",
-    "salary_range": "$25,000 - $30,000"
+    "salary_range": "$25,000 - $30,000",
+    "salary_min": 25000,
+    "salary_max": 30000,
+    "salary_lincoln_adjusted": 27500,
+    "location_state": "Wisconsin",
+    "location_region": "Midwest"
   },
   {
     "id": "sample-2", 
@@ -20,6 +26,7 @@
     "organization": "Texas A&M University",
     "location": "College Station, TX",
     "discipline": "Fisheries Science",
+    "discipline_primary": "Fisheries Science",
     "description": "Study of coastal fish populations",
     "degree_requirements": "M.S. in Marine Biology",
     "is_graduate_assistantship": true,
@@ -27,7 +34,12 @@
     "is_big10_university": false,
     "university_name": "Texas A&M University",
     "posted_date": "2025-06-19",
-    "salary_range": "$22,000 - $28,000"
+    "salary_range": "$22,000 - $28,000",
+    "salary_min": 22000,
+    "salary_max": 28000,
+    "salary_lincoln_adjusted": 25000,
+    "location_state": "Texas",
+    "location_region": "South"
   },
   {
     "id": "sample-3",
@@ -35,6 +47,7 @@
     "organization": "University of Michigan",
     "location": "Ann Arbor, MI", 
     "discipline": "Conservation Biology",
+    "discipline_primary": "Conservation Biology",
     "description": "Research on endangered species recovery",
     "degree_requirements": "Ph.D. in Ecology",
     "is_graduate_assistantship": true,
@@ -42,6 +55,11 @@
     "is_big10_university": true,
     "university_name": "University of Michigan",
     "posted_date": "2025-06-18",
-    "salary_range": "$28,000 - $35,000"
+    "salary_range": "$28,000 - $35,000",
+    "salary_min": 28000,
+    "salary_max": 35000,
+    "salary_lincoln_adjusted": 31500,
+    "location_state": "Michigan",
+    "location_region": "Midwest"
   }
 ]

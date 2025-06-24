@@ -284,14 +284,14 @@ class AnalyticsDashboard {
         // Average stipend (Lincoln-adjusted)
         const validSalaries = gradJobs
             .map(job => job.salary_lincoln_adjusted)
-            .filter(salary => salary > 0);
+            .filter(salary => salary && typeof salary === 'number' && salary > 0);
         
         const avgStipend = validSalaries.length > 0 
             ? Math.round(validSalaries.reduce((a, b) => a + b) / validSalaries.length)
             : 0;
         
         document.getElementById('avg-stipend').textContent = 
-            avgStipend > 0 ? `$${avgStipend.toLocaleString()}` : 'N/A';
+            (avgStipend && avgStipend > 0) ? `$${avgStipend.toLocaleString()}` : 'N/A';
         
         // Top discipline
         const disciplineCounts = {};
