@@ -33,6 +33,45 @@ class AnalyticsDashboard {
         }
     }
     
+    /**
+     * Extract salary value from job data - handles multiple formats
+     * @param {Object} job - Job object
+     * @returns {number} - Extracted salary value
+     */
+    extractSalaryValue(job) {
+        // Try salary_lincoln_adjusted first (preferred)
+        if (job.salary_lincoln_adjusted && typeof job.salary_lincoln_adjusted === 'number' && job.salary_lincoln_adjusted > 0) {
+            return job.salary_lincoln_adjusted;
+        }
+        
+        // Try numeric salary fields
+        if (job.salary_min && job.salary_max) {
+            return (job.salary_min + job.salary_max) / 2;
+        }
+        
+        // Parse salary_range string (e.g., "$25,000 - $30,000")
+        if (job.salary_range && typeof job.salary_range === 'string') {
+            const ranges = job.salary_range.match(/\$?[\d,]+/g);
+            if (ranges && ranges.length >= 2) {
+                const min = parseInt(ranges[0].replace(/[$,]/g, ''));
+                const max = parseInt(ranges[1].replace(/[$,]/g, ''));
+                if (!isNaN(min) && !isNaN(max)) {
+                    return (min + max) / 2;
+                }
+            }
+            // Single value (e.g., "$25,000")
+            else if (ranges && ranges.length === 1) {
+                const value = parseInt(ranges[0].replace(/[$,]/g, ''));
+                if (!isNaN(value)) {
+                    return value;
+                }
+            }
+        }
+        
+        // Fallback - no valid salary found
+        return 0;
+    }
+    
     async loadData() {
         const cacheBuster = '?t=' + Date.now();
         
@@ -283,8 +322,8 @@ class AnalyticsDashboard {
         
         // Average stipend (Lincoln-adjusted)
         const validSalaries = gradJobs
-            .map(job => job.salary_lincoln_adjusted)
-            .filter(salary => salary && typeof salary === 'number' && salary > 0);
+            .map(job => this.extractSalaryValue(job))
+            .filter(salary => salary && salary > 0);
         
         const avgStipend = validSalaries.length > 0 
             ? Math.round(validSalaries.reduce((a, b) => a + b) / validSalaries.length)
@@ -350,7 +389,7 @@ class AnalyticsDashboard {
         const disciplines = {};
         
         // Add Overall category first
-        const allSalaries = gradJobs.filter(job => job.salary_lincoln_adjusted > 0).map(job => job.salary_lincoln_adjusted);
+        const allSalaries = gradJobs.map(job => this.extractSalaryValue(job)).filter(salary => salary > 0);
         const allLocations = new Set(gradJobs.map(job => job.geographic_region).filter(region => region));
         
         disciplines['Overall'] = {
@@ -373,8 +412,9 @@ class AnalyticsDashboard {
             }
             disciplines[discipline].count++;
             disciplines[discipline].jobs.push(job);
-            if (job.salary_lincoln_adjusted > 0) {
-                disciplines[discipline].salaries.push(job.salary_lincoln_adjusted);
+            const salary = this.extractSalaryValue(job);
+            if (salary > 0) {
+                disciplines[discipline].salaries.push(salary);
             }
             if (job.geographic_region) {
                 disciplines[discipline].locations.add(job.geographic_region);
@@ -820,8 +860,9 @@ class AnalyticsDashboard {
             
             regionData[region].count++;
             
-            if (job.salary_lincoln_adjusted > 0) {
-                regionData[region].salaries.push(job.salary_lincoln_adjusted);
+            const salary = this.extractSalaryValue(job);
+            if (salary > 0) {
+                regionData[region].salaries.push(salary);
             }
             
             if (!regionData[region].disciplines[discipline]) {
@@ -947,8 +988,9 @@ class AnalyticsDashboard {
                 regional[region] = { count: 0, salaries: [] };
             }
             regional[region].count++;
-            if (job.salary_lincoln_adjusted > 0) {
-                regional[region].salaries.push(job.salary_lincoln_adjusted);
+            const salary = this.extractSalaryValue(job);
+            if (salary > 0) {
+                regional[region].salaries.push(salary);
             }
         });
         
@@ -1039,11 +1081,11 @@ class AnalyticsDashboard {
         });
         
         // Salary insight
-        const validSalaries = gradJobs.filter(job => job.salary_lincoln_adjusted > 0);
+        const validSalaries = gradJobs.map(job => this.extractSalaryValue(job)).filter(salary => salary > 0);
         if (validSalaries.length > 0) {
             const salaryRange = {
-                min: Math.min(...validSalaries.map(j => j.salary_lincoln_adjusted)),
-                max: Math.max(...validSalaries.map(j => j.salary_lincoln_adjusted))
+                min: Math.min(...validSalaries),
+                max: Math.max(...validSalaries)
             };
             
             insights.push({
