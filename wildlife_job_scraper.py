@@ -18,7 +18,7 @@ from urllib.parse import quote
 import pandas as pd
 from dotenv import load_dotenv
 from fake_useragent import UserAgent
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -86,7 +86,8 @@ class JobListing(BaseModel):
     is_big10_university: bool = Field(default=False, description="Position at Big 10 university")
     university_name: str = Field(default="", description="Standardized university name")
     
-    @validator('title')
+    @field_validator('title')
+    @classmethod
     def title_must_not_be_empty(cls, v):
         """Ensure title is not empty or just whitespace."""
         if not v or not v.strip():
