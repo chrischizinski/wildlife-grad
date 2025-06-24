@@ -1,0 +1,47 @@
+[
+  {
+    "id": "sample-1",
+    "title": "Graduate Research Assistant - Wildlife Ecology",
+    "organization": "University of Wisconsin-Madison",
+    "location": "Madison, WI",
+    "discipline": "Wildlife Biology",
+    "description": "Research position focusing on deer population dynamics",
+    "degree_requirements": "M.S. in Wildlife Biology",
+    "is_graduate_assistantship": true,
+    "confidence_score": 0.95,
+    "is_big10_university": true,
+    "university_name": "University of Wisconsin-Madison",
+    "posted_date": "2025-06-20",
+    "salary_range": "$25,000 - $30,000"
+  },
+  {
+    "id": "sample-2", 
+    "title": "Fisheries Research Assistant",
+    "organization": "Texas A&M University",
+    "location": "College Station, TX",
+    "discipline": "Fisheries Science",
+    "description": "Study of coastal fish populations",
+    "degree_requirements": "M.S. in Marine Biology",
+    "is_graduate_assistantship": true,
+    "confidence_score": 0.92,
+    "is_big10_university": false,
+    "university_name": "Texas A&M University",
+    "posted_date": "2025-06-19",
+    "salary_range": "$22,000 - $28,000"
+  },
+  {
+    "id": "sample-3",
+    "title": "Graduate Assistant - Conservation Biology",
+    "organization": "University of Michigan",
+    "location": "Ann Arbor, MI", 
+    "discipline": "Conservation Biology",
+    "description": "Research on endangered species recovery",
+    "degree_requirements": "Ph.D. in Ecology",
+    "is_graduate_assistantship": true,
+    "confidence_score": 0.98,
+    "is_big10_university": true,
+    "university_name": "University of Michigan",
+    "posted_date": "2025-06-18",
+    "salary_range": "$28,000 - $35,000"
+  }
+]
