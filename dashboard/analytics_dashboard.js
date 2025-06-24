@@ -27,6 +27,7 @@ class AnalyticsDashboard {
             this.renderDashboard();
             this.setupEventListeners();
             this.hideLoading();
+            this.checkFirstTimeUser();
         } catch (error) {
             this.showError(error.message);
         }
@@ -1147,6 +1148,18 @@ class AnalyticsDashboard {
         // Refresh button
         document.getElementById('refresh-data').addEventListener('click', () => this.refreshData());
         
+        // About section collapse handler
+        const aboutCollapse = document.getElementById('aboutContent');
+        const aboutButton = document.querySelector('[data-bs-target="#aboutContent"]');
+        if (aboutCollapse && aboutButton) {
+            aboutCollapse.addEventListener('shown.bs.collapse', () => {
+                aboutButton.querySelector('i').classList.replace('fa-chevron-down', 'fa-chevron-up');
+            });
+            aboutCollapse.addEventListener('hidden.bs.collapse', () => {
+                aboutButton.querySelector('i').classList.replace('fa-chevron-up', 'fa-chevron-down');
+            });
+        }
+        
         // Enhanced Big 10 toggle with better UX
         document.getElementById('big10-toggle').addEventListener('change', (e) => {
             const isChecked = e.target.checked;
@@ -1354,6 +1367,59 @@ class AnalyticsDashboard {
             document.getElementById('footer-last-updated').innerHTML = 
                 `<i class="fas fa-clock me-2"></i>Last updated: ${lastUpdated}`;
         }
+        
+        // Update footer total positions
+        const footerTotal = document.getElementById('footer-total-positions');
+        if (footerTotal) {
+            footerTotal.textContent = this.data.jobs.length.toLocaleString();
+        }
+    }
+    
+    checkFirstTimeUser() {
+        // Check if user has visited before
+        const hasVisited = localStorage.getItem('wildlife-dashboard-visited');
+        if (!hasVisited) {
+            // Show first-time user guidance
+            setTimeout(() => {
+                this.showWelcomeToast();
+                localStorage.setItem('wildlife-dashboard-visited', 'true');
+            }, 1000);
+        }
+    }
+    
+    showWelcomeToast() {
+        const toast = document.createElement('div');
+        toast.className = 'position-fixed bottom-0 end-0 m-3';
+        toast.style.zIndex = '9999';
+        toast.innerHTML = `
+            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+                <div class="toast-header bg-primary text-white">
+                    <i class="fas fa-graduation-cap me-2"></i>
+                    <strong class="me-auto">Welcome to Wildlife Graduate Analytics!</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body">
+                    <p class="mb-2"><strong>New here?</strong> This dashboard analyzes wildlife graduate assistantship opportunities.</p>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary btn-sm" onclick="document.querySelector('[href=&quot;#about&quot;]').click(); document.getElementById('aboutContent').classList.add('show');">
+                            <i class="fas fa-info-circle me-1"></i>Learn More
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" data-bs-dismiss="toast">
+                            <i class="fas fa-times me-1"></i>Dismiss
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Auto-remove after 15 seconds
+        setTimeout(() => {
+            const bsToast = new bootstrap.Toast(toast.querySelector('.toast'));
+            bsToast.hide();
+            setTimeout(() => toast.remove(), 500);
+        }, 15000);
     }
     
     showLoading() {

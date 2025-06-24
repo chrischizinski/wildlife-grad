@@ -20,6 +20,7 @@
                 Wildlife Graduate Assistantships Analytics
             </a>
             <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="#about">About</a>
                 <a class="nav-link" href="#overview">Overview</a>
                 <a class="nav-link" href="#trends">Trends</a>
                 <a class="nav-link" href="#geographic">Geographic</a>
@@ -46,6 +47,102 @@
 
         <!-- Main Content -->
         <div id="main-content" class="d-none">
+            <!-- About This Dashboard Section -->
+            <section id="about" class="mb-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card border-primary">
+                            <div class="card-header bg-primary text-white">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        About This Wildlife Graduate Assistantship Analytics Dashboard
+                                    </h5>
+                                    <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" 
+                                            data-bs-target="#aboutContent" aria-expanded="false" aria-controls="aboutContent">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="collapse" id="aboutContent">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-8">
+                                            <h6 class="text-primary mb-3">
+                                                <i class="fas fa-bullseye me-2"></i>Purpose & Scope
+                                            </h6>
+                                            <p class="mb-3">
+                                                This dashboard provides comprehensive analytics for <strong>wildlife and fisheries graduate assistantship opportunities</strong> 
+                                                scraped from the Texas A&M Wildlife and Fisheries job board (<a href="https://jobs.rwfm.tamu.edu/search/" target="_blank" rel="noopener">jobs.rwfm.tamu.edu</a>). 
+                                                The system automatically identifies and analyzes genuine graduate assistantships, fellowships, and PhD/Masters positions 
+                                                while filtering out internships, technician roles, and professional positions.
+                                            </p>
+                                            
+                                            <h6 class="text-success mb-3">
+                                                <i class="fas fa-sync-alt me-2"></i>Data Updates & Automation
+                                            </h6>
+                                            <ul class="mb-3">
+                                                <li><strong>Weekly Scraping:</strong> Automated data collection every Sunday at 6:00 AM UTC via GitHub Actions</li>
+                                                <li><strong>Real-time Processing:</strong> Advanced classification algorithms analyze job descriptions, requirements, and project details</li>
+                                                <li><strong>Historical Tracking:</strong> Time-series data maintained for trend analysis and seasonal pattern detection</li>
+                                                <li><strong>Dashboard Deployment:</strong> Automatic updates to GitHub Pages within minutes of new data collection</li>
+                                            </ul>
+                                            
+                                            <h6 class="text-info mb-3">
+                                                <i class="fas fa-chart-line me-2"></i>Analytics Features
+                                            </h6>
+                                            <ul class="mb-3">
+                                                <li><strong>Smart Classification:</strong> AI-powered detection of true graduate assistantships (90%+ accuracy)</li>
+                                                <li><strong>Discipline Analysis:</strong> Automatic categorization into Wildlife Management, Fisheries, Environmental Science, etc.</li>
+                                                <li><strong>Geographic Distribution:</strong> Regional analysis with cost-of-living adjusted salary comparisons</li>
+                                                <li><strong>Big 10 University Filter:</strong> Toggle to focus on positions at major research institutions</li>
+                                                <li><strong>Trend Analysis:</strong> Monthly posting patterns, seasonal variations, and market insights</li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <div class="col-lg-4">
+                                            <div class="alert alert-warning mb-3">
+                                                <h6 class="alert-heading">
+                                                    <i class="fas fa-exclamation-triangle me-2"></i>Important Disclaimers
+                                                </h6>
+                                                <div class="small">
+                                                    <p class="mb-2"><strong>Use at Your Own Discretion:</strong> This dashboard is provided for informational and research purposes only.</p>
+                                                    <p class="mb-2"><strong>No Guarantees:</strong> While we strive for accuracy, we cannot guarantee the completeness or correctness of job postings or classifications.</p>
+                                                    <p class="mb-2"><strong>Third-Party Data:</strong> Information is sourced from external job boards and may contain errors or outdated listings.</p>
+                                                    <p class="mb-0"><strong>Not Career Advice:</strong> This tool should supplement, not replace, your own research and application strategies.</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="alert alert-info mb-3">
+                                                <h6 class="alert-heading">
+                                                    <i class="fas fa-graduation-cap me-2"></i>For Researchers & Students
+                                                </h6>
+                                                <div class="small">
+                                                    <p class="mb-2"><strong>Academic Use:</strong> Ideal for understanding market trends, geographic patterns, and funding landscapes.</p>
+                                                    <p class="mb-2"><strong>Comparative Analysis:</strong> Compare opportunities across disciplines, regions, and institution types.</p>
+                                                    <p class="mb-0"><strong>Strategic Planning:</strong> Use trend data to time applications and identify emerging opportunities.</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="alert alert-light border">
+                                                <h6 class="mb-2">
+                                                    <i class="fas fa-code me-2"></i>Open Source & Methodology
+                                                </h6>
+                                                <div class="small text-muted">
+                                                    <p class="mb-1">This project is open source and available on GitHub.</p>
+                                                    <p class="mb-1">Classification algorithms and data processing methods are transparent and reproducible.</p>
+                                                    <p class="mb-0">Contributions and improvements welcome from the research community.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Header Stats Banner -->
             <section id="overview" class="mb-4">
                 <!-- Filter Info Panel (shown when Big 10 filter is active) -->
@@ -380,24 +477,52 @@
         </div>
     </div>
 
-    <footer class="bg-light mt-5 py-4">
+    <footer class="bg-light mt-5 py-4 border-top">
         <div class="container">
-            <div class="row">
+            <div class="row mb-3">
                 <div class="col-md-4">
-                    <p class="text-muted mb-0">
+                    <h6 class="text-primary mb-2">Wildlife Graduate Analytics</h6>
+                    <p class="text-muted small mb-2">
                         <i class="fas fa-chart-line me-2"></i>
-                        Wildlife Graduate Assistantship Analytics
+                        Automated analytics for wildlife and fisheries graduate assistantship opportunities
                     </p>
-                </div>
-                <div class="col-md-4 text-center">
-                    <p class="text-muted mb-0" id="footer-last-updated">
+                    <p class="text-muted small mb-0" id="footer-last-updated">
                         <i class="fas fa-clock me-2"></i>
                         Last updated: Never
                     </p>
                 </div>
-                <div class="col-md-4 text-md-end">
-                    <p class="text-muted mb-0">
+                <div class="col-md-4">
+                    <h6 class="text-primary mb-2">Data & Updates</h6>
+                    <div class="small text-muted">
+                        <p class="mb-1"><i class="fas fa-sync-alt me-2"></i>Weekly automated scraping</p>
+                        <p class="mb-1"><i class="fas fa-robot me-2"></i>AI-powered classification</p>
+                        <p class="mb-0"><i class="fas fa-github me-2"></i>Open source methodology</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-primary mb-2">Important Notice</h6>
+                    <div class="small text-muted">
+                        <p class="mb-1"><strong>Research Purposes Only:</strong> Use at your own discretion</p>
+                        <p class="mb-1"><strong>No Guarantees:</strong> Accuracy not guaranteed</p>
+                        <p class="mb-0"><strong>Third-Party Data:</strong> Sourced from external job boards</p>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="my-3">
+            
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="text-muted small mb-0">
+                        <i class="fas fa-exclamation-triangle me-2 text-warning"></i>
+                        <strong>Disclaimer:</strong> This dashboard is provided for informational purposes only. 
+                        Users should verify all information independently and use this data at their own discretion.
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted small mb-0">
                         <i class="fas fa-database me-2"></i>
+                        <span id="footer-total-positions">0</span> total positions analyzed •
                         Research-grade analytics platform
                     </p>
                 </div>
