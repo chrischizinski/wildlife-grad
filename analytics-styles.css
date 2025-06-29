@@ -1,0 +1,716 @@
+/* Analytics Dashboard Styles - Focused on Data Visualization */
+
+:root {
+    --primary-color: #059669;
+    --primary-dark: #047857;
+    --success-color: #22c55e;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --info-color: #0ea5e9;
+    --wildlife-blue: #1e40af;
+    --forest-green: #166534;
+    --earth-brown: #92400e;
+    --light-color: #f0fdf4;
+    --dark-color: #111827;
+    --border-radius: 0.75rem;
+    --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --box-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --transition: all 0.3s ease;
+}
+
+/* Base Styles */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, var(--light-color) 0%, #ecfdf5 100%);
+    color: #111827;
+    line-height: 1.6;
+}
+
+/* Ensure all headers are visible - but override for charts */
+h1, h2, h3, h4, h5, h6 {
+    color: #111827 !important;
+}
+
+/* Main header card has dark background - should be white text */
+.analytics-header-card h1, .analytics-header-card h2, .analytics-header-card h3, 
+.analytics-header-card h4, .analytics-header-card h5, .analytics-header-card h6 {
+    color: white !important;
+}
+
+/* Specific fix for the main title */
+.analytics-header-card h2,
+#overview .analytics-header-card h2,
+section#overview h2 {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* Specific chart section titles inside card bodies - only for actual chart titles */
+.analytics-card .card-body .col-lg-8 h6,
+.analytics-card .card-body .col-lg-4 h6 {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* Force ONLY specific chart titles to be white - NOT card headers */
+.col-lg-8 h6.mb-3,
+.col-lg-4 h6.mb-3 {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* Card headers should be DARK on white backgrounds - NUCLEAR OVERRIDE */
+.analytics-card .card-header h5,
+.analytics-card .card-header h6,
+#disciplines .card-header h5,
+#trends .card-header h5,
+#geographic .card-header h5,
+#insights .card-header h6,
+section#disciplines .analytics-card .card-header h5,
+section#trends .analytics-card .card-header h5,
+section#geographic .analytics-card .card-header h5 {
+    color: #111827 !important;
+    font-weight: 600 !important;
+    background-color: transparent !important;
+}
+
+/* Ensure all text content is visible */
+.card-header h5,
+.card-header h6 {
+    color: #111827 !important;
+    font-weight: 600 !important;
+}
+
+/* Card body headers - default dark for white backgrounds, but overridden above for analytics cards */
+.card-body h6 {
+    color: #111827 !important;
+    font-weight: 600 !important;
+}
+
+/* Fix text on dark backgrounds */
+.container-fluid {
+    color: #111827 !important;
+}
+
+/* Override Bootstrap dark backgrounds if any */
+.bg-dark, .bg-primary, .bg-secondary {
+    color: white !important;
+}
+
+.bg-dark h1, .bg-dark h2, .bg-dark h3, .bg-dark h4, .bg-dark h5, .bg-dark h6,
+.bg-primary h1, .bg-primary h2, .bg-primary h3, .bg-primary h4, .bg-primary h5, .bg-primary h6,
+.bg-secondary h1, .bg-secondary h2, .bg-secondary h3, .bg-secondary h4, .bg-secondary h5, .bg-secondary h6 {
+    color: white !important;
+}
+
+/* SYSTEMATIC HEADER CONTRAST FIX */
+/* Default: All headers dark text for light backgrounds */
+.analytics-card .card-header h5,
+.analytics-card .card-header h6,
+.card-body h6 {
+    color: #111827 !important;
+    font-weight: 600 !important;
+}
+
+/* Exception: Headers on dark/gradient backgrounds get white text */
+.analytics-header-card h1,
+.analytics-header-card h2,
+.analytics-header-card h3,
+.analytics-header-card h4,
+.analytics-header-card h5,
+.analytics-header-card h6 {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* Ensure main content has proper text color */
+#main-content {
+    color: #111827 !important;
+}
+
+#main-content h1, #main-content h2, #main-content h3, #main-content h4, #main-content h5, #main-content h6 {
+    color: #111827 !important;
+}
+
+/* Navigation */
+.navbar {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--box-shadow-lg);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: white !important;
+}
+
+.navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    transition: var(--transition);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem !important;
+    margin: 0 0.25rem;
+}
+
+.navbar-nav .nav-link:hover {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+/* Analytics Cards */
+.analytics-card {
+    background: white;
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.analytics-card:hover {
+    box-shadow: var(--box-shadow-lg);
+    transform: translateY(-2px);
+}
+
+.analytics-card .card-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-bottom: 2px solid #e2e8f0;
+    padding: 1.25rem;
+}
+
+.analytics-card .card-header h5,
+.analytics-card .card-header h6 {
+    color: #111827 !important;
+    font-weight: 600 !important;
+}
+
+.analytics-card .card-body {
+    padding: 1.5rem;
+}
+
+/* Header Analytics Card */
+.analytics-header-card {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border: 1px solid var(--primary-dark);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+}
+
+.analytics-header-card h2,
+.analytics-header-card h3,
+.analytics-header-card h4,
+.analytics-header-card h5,
+.analytics-header-card h6 {
+    color: white !important;
+}
+
+.analytics-header-card p,
+.analytics-header-card .text-muted {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Metric Cards */
+.metric-card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--box-shadow-lg);
+}
+
+.metric-card .card-body {
+    padding: 1.5rem;
+}
+
+.metric-icon {
+    opacity: 0.8;
+}
+
+.metric-card h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* Override Bootstrap colors for metric cards */
+.metric-card.bg-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important;
+    color: white !important;
+}
+
+.metric-card.bg-success {
+    background: linear-gradient(135deg, var(--success-color), var(--forest-green)) !important;
+    color: white !important;
+}
+
+.metric-card.bg-info {
+    background: linear-gradient(135deg, var(--info-color), var(--wildlife-blue)) !important;
+    color: white !important;
+}
+
+.metric-card.bg-warning {
+    background: linear-gradient(135deg, var(--warning-color), var(--earth-brown)) !important;
+    color: white !important;
+}
+
+/* Discipline Cards Enhanced */
+.discipline-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    overflow: hidden;
+    height: 100%;
+}
+
+.discipline-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--box-shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* Overall card special styling */
+.overall-card {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 2px solid var(--primary-color);
+    box-shadow: var(--box-shadow-lg);
+}
+
+.overall-card:hover {
+    border-color: var(--forest-green);
+    transform: translateY(-3px);
+}
+
+.overall-card .discipline-header h6 {
+    color: var(--primary-color) !important;
+    font-weight: 700 !important;
+}
+
+.overall-card .stat-value {
+    color: var(--forest-green) !important;
+    font-weight: 700 !important;
+}
+
+.discipline-card .card-body {
+    padding: 1.25rem;
+}
+
+.discipline-header {
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.discipline-header h6 {
+    color: #111827 !important;
+    font-weight: 600 !important;
+}
+
+.discipline-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.sparkline-stat {
+    grid-column: span 2;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color) !important;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #111827 !important;
+    font-weight: 500 !important;
+    margin-top: 0.25rem;
+}
+
+/* Charts and Visualizations */
+.chart-container {
+    position: relative;
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    box-shadow: var(--box-shadow);
+    height: 400px;
+    max-height: 400px;
+}
+
+/* Specific chart containers */
+#salary-comparison-chart {
+    max-height: 300px !important;
+}
+
+#discipline-pie-chart {
+    max-height: 300px !important;
+}
+
+#trends-chart {
+    max-height: 400px !important;
+}
+
+#organizations-chart {
+    max-height: 300px !important;
+}
+
+/* Trend Period Buttons */
+.btn-group .btn-check:checked + .btn {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* Export Options */
+.export-option {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.export-option:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--box-shadow);
+    transform: translateY(-2px);
+}
+
+/* Geographic section layout */
+#geographic .row {
+    align-items: center;
+    min-height: 450px;
+}
+
+#geographic .col-lg-8 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#geographic .col-lg-4 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Regional Breakdown */
+.regional-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background: white;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.regional-item:hover {
+    background: #f8fafc;
+    border-color: var(--primary-color);
+}
+
+.region-name {
+    font-weight: 600;
+    color: #111827 !important;
+    font-size: 0.9rem;
+}
+
+.region-stats {
+    text-align: right;
+    font-size: 0.875rem;
+}
+
+.region-count {
+    font-weight: 700;
+    color: var(--primary-color) !important;
+}
+
+.region-percentage {
+    color: #111827 !important;
+    font-weight: 500;
+}
+
+/* Insights Section */
+.insight-item {
+    background: linear-gradient(135deg, #f8fafc 0%, white 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+}
+
+.insight-item:hover {
+    border-color: var(--info-color);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.insight-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--info-color), #1d4ed8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-right: 1rem;
+    font-size: 1.1rem;
+}
+
+.insight-content h6 {
+    color: #111827 !important;
+    margin-bottom: 0.5rem;
+    font-weight: 600 !important;
+}
+
+.insight-content p {
+    color: #111827 !important;
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    font-weight: 400 !important;
+}
+
+/* Seasonal Patterns */
+.seasonal-pattern {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.season-name {
+    font-weight: 600;
+    color: var(--primary-color) !important;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.season-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.season-count {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827 !important;
+}
+
+.season-trend {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    font-weight: 600;
+}
+
+.trend-up {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.trend-down {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.trend-stable {
+    background: #e0e7ff;
+    color: #4338ca;
+}
+
+/* Loading and Error States */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container-fluid {
+        margin-top: 70px !important;
+    }
+    
+    .analytics-header-card {
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .metric-card .card-body {
+        padding: 1rem;
+    }
+    
+    .metric-card h3 {
+        font-size: 1.5rem;
+    }
+    
+    .discipline-stats {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .chart-container {
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar-brand {
+        font-size: 1rem;
+    }
+    
+    .analytics-card .card-body {
+        padding: 1rem;
+    }
+    
+    .regional-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .navbar,
+    .btn,
+    #export {
+        display: none !important;
+    }
+    
+    .analytics-card {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        break-inside: avoid;
+        margin-bottom: 1rem;
+    }
+    
+    .metric-card {
+        background: #f8f9fa !important;
+        color: #333 !important;
+    }
+}
+
+/* Sparkline containers and trend indicators */
+.sparkline-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.sparkline-container canvas {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sparkline-stat .stat-item {
+    padding: 1rem 0.75rem;
+}
+
+.sparkline-stat .sparkline-container {
+    flex: 1;
+    min-height: 40px;
+}
+
+.trend-indicator {
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    line-height: 1;
+}
+
+.trend-indicator.trend-up {
+    background: rgba(34, 197, 94, 0.2);
+    color: #16a34a;
+}
+
+.trend-indicator.trend-down {
+    background: rgba(239, 68, 68, 0.2);
+    color: #dc2626;
+}
+
+.trend-indicator.trend-stable {
+    background: rgba(156, 163, 175, 0.2);
+    color: #6b7280;
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in {
+    animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Focus States for Accessibility */
+.btn:focus,
+.analytics-card:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Dark Mode Support (Future Enhancement) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --light-color: #1e293b;
+        --dark-color: #f8fafc;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: var(--dark-color);
+    }
+    
+    .analytics-card,
+    .analytics-header-card {
+        background: #1e293b;
+        border-color: #334155;
+        color: var(--dark-color);
+    }
+}
