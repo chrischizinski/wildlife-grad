@@ -1,60 +1,60 @@
 {
-  "total_positions": 1366,
-  "graduate_positions": 188,
-  "non_graduate_positions": 1178,
+  "total_positions": 1587,
+  "graduate_positions": 234,
+  "non_graduate_positions": 1353,
   "high_confidence_graduate": 0,
   "merge_stats": {
     "new_positions": 221,
     "updated_positions": 2,
-    "total_positions": 1366,
-    "merge_date": "2025-06-24T17:31:08.182886"
+    "total_positions": 1587,
+    "merge_date": "2025-06-29T06:40:34.473356"
   },
   "disciplines": {
-    "Human Dimensions": 20,
-    "Other": 42,
-    "Environmental Science": 59,
-    "Wildlife Management and Conservation": 35,
-    "Fisheries Management and Conservation": 32
+    "Human Dimensions": 25,
+    "Other": 52,
+    "Environmental Science": 74,
+    "Wildlife Management and Conservation": 44,
+    "Fisheries Management and Conservation": 39
   },
   "position_types": {
     "Unknown": 462,
-    "Professional/Other": 708,
-    "Masters Position": 16,
-    "PhD Position": 60,
-    "Graduate Assistantship": 88,
-    "Graduate Position": 8,
-    "Fellowship": 24
+    "Professional/Other": 881,
+    "Masters Position": 20,
+    "PhD Position": 75,
+    "Graduate Assistantship": 109,
+    "Graduate Position": 10,
+    "Fellowship": 30
   },
   "geographic_regions": {
-    "Southeast": 276,
-    "West": 226,
-    "Southwest": 250,
-    "International": 12,
-    "Midwest": 138,
-    "Remote/Multiple": 332,
-    "Northeast": 78,
-    "Other": 54
+    "Southeast": 320,
+    "West": 263,
+    "Southwest": 291,
+    "International": 14,
+    "Midwest": 161,
+    "Remote/Multiple": 386,
+    "Northeast": 89,
+    "Other": 63
   },
   "salary_analysis_lincoln_adjusted": {
-    "mean": 32602.521369556853,
+    "mean": 32623.26263013827,
     "median": 27272.727272727272,
     "min": 2173.913043478261,
     "max": 71774.11764705883,
-    "count": 130
+    "count": 162
   },
   "temporal_trends": {
-    "2025-01": 58,
-    "2024-11": 30,
-    "2025-06": 514,
-    "2025-05": 448,
-    "2024-10": 36,
-    "2025-04": 120,
-    "2025-03": 82,
-    "2025-02": 42,
-    "2024-08": 6,
-    "2024-12": 12,
-    "2024-09": 12,
-    "2024-06": 6
+    "2025-01": 67,
+    "2024-11": 35,
+    "2025-06": 597,
+    "2025-05": 520,
+    "2024-10": 42,
+    "2025-04": 140,
+    "2025-03": 95,
+    "2025-02": 49,
+    "2024-08": 7,
+    "2024-12": 14,
+    "2024-09": 14,
+    "2024-06": 7
   },
-  "last_updated": "2025-06-24T17:31:08.213798"
+  "last_updated": "2025-06-29T06:40:34.502849"
 }
