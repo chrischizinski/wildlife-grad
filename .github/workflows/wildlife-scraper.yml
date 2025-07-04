@@ -34,7 +34,7 @@ jobs:
         python-version: '3.11'
         
     - name: 🌐 Install Chrome Browser
-      uses: browser-actions/setup-chrome@latest
+      uses: browser-actions/setup-chrome@v1.7.2
       
     - name: 🚗 Setup ChromeDriver & Display
       run: |
@@ -51,6 +51,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         echo "Dependencies installed successfully"
+        
+    - name: 🛜️ Scan dependencies for vulnerabilities
+      run: |
+        pip install pip-audit
+        pip-audit --desc --format=json --output=dependency-scan.json || true
+        echo "Dependency vulnerability scan completed"
         
     - name: 📁 Create data directories
       run: |

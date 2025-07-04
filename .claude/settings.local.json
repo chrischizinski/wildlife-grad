@@ -2,7 +2,18 @@
   "permissions": {
     "allow": [
       "Bash(open:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(python:*)",
+      "Bash(ls:*)",
+      "mcp__zen-mcp-server__codereview",
+      "Bash(grep:*)",
+      "Bash(mv:*)",
+      "mcp__filesystem__directory_tree",
+      "mcp__filesystem__read_multiple_files",
+      "mcp__filesystem__search_files",
+      "Bash(rm:*)",
+      "Bash(git checkout:*)",
+      "Bash(git rebase:*)"
     ],
     "deny": []
   }

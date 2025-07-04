@@ -19,6 +19,18 @@ class AnalyticsDashboard {
         this.init();
     }
     
+    /**
+     * Sanitize HTML content to prevent XSS attacks
+     * @param {string} str - String to sanitize
+     * @returns {string} - Escaped HTML string
+     */
+    escapeHTML(str) {
+        if (typeof str !== 'string') return String(str);
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+    
     async init() {
         this.showLoading();
         
@@ -542,7 +554,7 @@ class AnalyticsDashboard {
                     <div class="${cardClass}">
                         <div class="card-body">
                             <div class="discipline-header">
-                                <h6 class="mb-0">${discipline}</h6>
+                                <h6 class="mb-0">${this.escapeHTML(discipline)}</h6>
                             </div>
                             <div class="discipline-stats">
                                 <div class="stat-item">
@@ -879,10 +891,10 @@ class AnalyticsDashboard {
         
         container.innerHTML = seasonalData.map(season => `
             <div class="seasonal-pattern">
-                <div class="season-name">${season.name}</div>
+                <div class="season-name">${this.escapeHTML(season.name)}</div>
                 <div class="season-stats">
-                    <span class="season-count">${season.count}</span>
-                    <span class="season-trend trend-${season.trend.toLowerCase()}">${season.trendText}</span>
+                    <span class="season-count">${this.escapeHTML(season.count)}</span>
+                    <span class="season-trend trend-${this.escapeHTML(season.trend.toLowerCase())}">${this.escapeHTML(season.trendText)}</span>
                 </div>
             </div>
         `).join('');
@@ -1090,12 +1102,13 @@ class AnalyticsDashboard {
                 const avgSalary = data.salaries.length > 0 
                     ? Math.round(data.salaries.reduce((a, b) => a + b) / data.salaries.length)
                     : 0;
+                const safeRegion = this.escapeHTML(region);
                 
                 return `
                     <div class="regional-item mb-2">
-                        <div class="region-name">${region}</div>
+                        <div class="region-name">${safeRegion}</div>
                         <div class="region-stats">
-                            <div class="region-count">${data.count} positions</div>
+                            <div class="region-count">${this.escapeHTML(data.count)} positions</div>
                             <div class="region-percentage">${avgSalary > 0 ? '$' + avgSalary.toLocaleString() : 'N/A'} avg</div>
                         </div>
                     </div>
@@ -1145,11 +1158,11 @@ class AnalyticsDashboard {
             <div class="insight-item">
                 <div class="d-flex align-items-start">
                     <div class="insight-icon">
-                        <i class="${insight.icon}"></i>
+                        <i class="${this.escapeHTML(insight.icon)}"></i>
                     </div>
                     <div class="insight-content">
-                        <h6>${insight.title}</h6>
-                        <p>${insight.description}</p>
+                        <h6>${this.escapeHTML(insight.title)}</h6>
+                        <p>${this.escapeHTML(insight.description)}</p>
                     </div>
                 </div>
             </div>
@@ -1338,12 +1351,17 @@ class AnalyticsDashboard {
         const toast = document.createElement('div');
         toast.className = 'position-fixed top-0 start-50 translate-middle-x mt-2';
         toast.style.zIndex = '9999';
+        const alertType = isBig10Only ? 'warning' : 'info';
+        const iconType = isBig10Only ? 'university' : 'globe';
+        const titleText = isBig10Only ? 'Big 10 Filter Active' : 'Showing All Universities';
+        const descText = isBig10Only ? 'Displaying only Big 10 university positions' : 'Displaying positions from all universities';
+        
         toast.innerHTML = `
-            <div class="alert alert-${isBig10Only ? 'warning' : 'info'} alert-dismissible fade show shadow-sm" role="alert" style="min-width: 300px;">
-                <i class="fas fa-${isBig10Only ? 'university' : 'globe'} me-2"></i>
-                <strong>${isBig10Only ? 'Big 10 Filter Active' : 'Showing All Universities'}</strong>
+            <div class="alert alert-${this.escapeHTML(alertType)} alert-dismissible fade show shadow-sm" role="alert" style="min-width: 300px;">
+                <i class="fas fa-${this.escapeHTML(iconType)} me-2"></i>
+                <strong>${this.escapeHTML(titleText)}</strong>
                 <br><small class="text-muted">
-                    ${isBig10Only ? 'Displaying only Big 10 university positions' : 'Displaying positions from all universities'}
+                    ${this.escapeHTML(descText)}
                 </small>
             </div>
         `;
@@ -1532,7 +1550,7 @@ class AnalyticsDashboard {
                 <div class="toast-body">
                     <p class="mb-2"><strong>New here?</strong> This dashboard analyzes wildlife graduate assistantship opportunities.</p>
                     <div class="d-flex gap-2">
-                        <button class="btn btn-primary btn-sm" onclick="document.querySelector('[href=&quot;#about&quot;]').click(); document.getElementById('aboutContent').classList.add('show');">
+                        <button class="btn btn-primary btn-sm" id="welcome-learn-more-btn">
                             <i class="fas fa-info-circle me-1"></i>Learn More
                         </button>
                         <button class="btn btn-outline-secondary btn-sm" data-bs-dismiss="toast">
@@ -1544,6 +1562,26 @@ class AnalyticsDashboard {
         `;
         
         document.body.appendChild(toast);
+        
+        // Add secure event listener for the Learn More button
+        const learnMoreBtn = toast.querySelector('#welcome-learn-more-btn');
+        if (learnMoreBtn) {
+            learnMoreBtn.addEventListener('click', () => {
+                // Navigate to about section
+                const aboutLink = document.querySelector('[href="#about"]');
+                if (aboutLink) {
+                    aboutLink.click();
+                }
+                // Expand the about content
+                const aboutContent = document.getElementById('aboutContent');
+                if (aboutContent) {
+                    aboutContent.classList.add('show');
+                }
+                // Hide the toast
+                const bsToast = new bootstrap.Toast(toast.querySelector('.toast'));
+                bsToast.hide();
+            });
+        }
         
         // Auto-remove after 15 seconds
         setTimeout(() => {

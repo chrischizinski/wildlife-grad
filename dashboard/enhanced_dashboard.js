@@ -3,6 +3,18 @@
  * Implements discipline indicators, trend analysis, and CSV export functionality
  */
 
+/**
+ * Sanitize HTML content to prevent XSS attacks
+ * @param {string} str - String to sanitize
+ * @returns {string} - Escaped HTML string
+ */
+function escapeHTML(str) {
+    if (typeof str !== 'string') return String(str);
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
 let dashboardData = null;
 let exportData = null;
 let currentTimeframe = '1_month';
@@ -111,14 +123,14 @@ function createDisciplineIndicators() {
         card.innerHTML = `
             <div class="card h-100" style="border-left: 4px solid ${color}">
                 <div class="card-body">
-                    <h6 class="card-title text-truncate" title="${discipline}">${discipline}</h6>
+                    <h6 class="card-title text-truncate" title="${escapeHTML(discipline)}">${escapeHTML(discipline)}</h6>
                     <div class="row">
                         <div class="col-6 text-center">
                             <h4 class="text-primary mb-0" 
                                 data-bs-toggle="tooltip" 
                                 data-bs-placement="top" 
                                 data-bs-title="All job postings in this discipline (includes graduate positions, internships, and professional roles)">
-                                ${data.total_positions}
+                                ${escapeHTML(data.total_positions)}
                             </h4>
                             <small class="text-muted">
                                 <i class="fas fa-list me-1"></i>Total Postings
@@ -129,7 +141,7 @@ function createDisciplineIndicators() {
                                 data-bs-toggle="tooltip" 
                                 data-bs-placement="top" 
                                 data-bs-title="Confirmed graduate assistantships, fellowships, and PhD/Masters positions only (excludes internships and professional jobs)">
-                                ${gradPositions}
+                                ${escapeHTML(gradPositions)}
                             </h4>
                             <small class="text-muted">
                                 <i class="fas fa-graduation-cap me-1"></i>Grad Positions
