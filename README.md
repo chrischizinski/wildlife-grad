@@ -1,15 +1,35 @@
 # Wildlife Graduate Assistantships Analytics Platform
 
+[![Scraper Status](https://github.com/chrischizinski/wildlife-grad/actions/workflows/wildlife-scraper.yml/badge.svg)](https://github.com/chrischizinski/wildlife-grad/actions/workflows/wildlife-scraper.yml)
+[![Dashboard Deployment](https://github.com/chrischizinski/wildlife-grad/actions/workflows/deploy-dashboard.yml/badge.svg)](https://github.com/chrischizinski/wildlife-grad/actions/workflows/deploy-dashboard.yml)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen?logo=github)](https://chrischizinski.github.io/wildlife-grad/)
+[![Last Commit](https://img.shields.io/github/last-commit/chrischizinski/wildlife-grad)](https://github.com/chrischizinski/wildlife-grad/commits/main)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 A comprehensive platform for tracking and analyzing graduate assistantship opportunities in wildlife, fisheries, and natural resources. Features automated web scraping, machine learning classification, historical data tracking, and interactive analytics dashboards.
 
-## 🚀 Current Status
+**🔗 [View Live Dashboard](https://chrischizinski.github.io/wildlife-grad/)** | **📊 [Analytics Dashboard](https://chrischizinski.github.io/wildlife-grad/analytics_dashboard.html)**
 
+## 🚀 Project Status
+
+[![Issues](https://img.shields.io/github/issues/chrischizinski/wildlife-grad)](https://github.com/chrischizinski/wildlife-grad/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/chrischizinski/wildlife-grad)](https://github.com/chrischizinski/wildlife-grad/pulls)
+[![Code Size](https://img.shields.io/github/languages/code-size/chrischizinski/wildlife-grad)](https://github.com/chrischizinski/wildlife-grad)
+[![Stars](https://img.shields.io/github/stars/chrischizinski/wildlife-grad)](https://github.com/chrischizinski/wildlife-grad/stargazers)
+
+### 📊 Data & Analytics
 - **1,587 total positions** tracked with historical deduplication
 - **305 positions with salary data** (avg: $33,596 Lincoln-adjusted)
 - **Real ML classification** using TF-IDF + cosine similarity across 11 disciplines
 - **Interactive dashboards** with advanced filtering and analytics
 - **Fully automated** weekly scraping via GitHub Actions
 - **Production-ready** with XSS protection and accessibility compliance
+
+### 🔄 Automation Status
+- **Weekly Scraping**: Sundays at 6:00 AM UTC
+- **Dashboard Deployment**: Automatic on data updates
+- **Security Scanning**: Integrated vulnerability detection
+- **Historical Archiving**: Timestamped data preservation
 
 ## ✨ Key Features
 
