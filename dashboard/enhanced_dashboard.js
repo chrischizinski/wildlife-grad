@@ -96,12 +96,18 @@ async function initDashboard() {
  * Update overview summary cards
  */
 function updateOverviewCards() {
-    const overview = dashboardData.overview;
+    const overview = dashboardData.overview || {};
     
-    document.getElementById('total-jobs').textContent = dashboardData.total_positions.toLocaleString();
-    document.getElementById('grad-positions').textContent = overview.graduate_positions.toLocaleString();
-    document.getElementById('salary-positions').textContent = overview.positions_with_salaries.toLocaleString();
-    document.getElementById('disciplines-count').textContent = overview.total_disciplines;
+    // Safely access data with fallbacks
+    const totalPositions = dashboardData.total_positions || 0;
+    const gradPositions = overview.graduate_positions || dashboardData.graduate_assistantships || 0;
+    const salaryPositions = overview.positions_with_salaries || 0;
+    const disciplinesCount = overview.total_disciplines || 0;
+    
+    document.getElementById('total-jobs').textContent = totalPositions.toLocaleString();
+    document.getElementById('grad-positions').textContent = gradPositions.toLocaleString();
+    document.getElementById('salary-positions').textContent = salaryPositions.toLocaleString();
+    document.getElementById('disciplines-count').textContent = disciplinesCount;
 }
 
 /**
@@ -545,11 +551,14 @@ function downloadFile(data, filename, mimeType) {
  * Update footer information
  */
 function updateFooter() {
-    const lastUpdated = new Date(dashboardData.last_updated).toLocaleDateString();
+    const lastUpdated = dashboardData.last_updated ? 
+        new Date(dashboardData.last_updated).toLocaleDateString() : 'Never';
     document.getElementById('footer-last-updated').innerHTML = 
         `<i class="fas fa-clock me-2"></i>Last updated: ${lastUpdated}`;
+    
+    const totalPositions = dashboardData.total_positions || 0;
     document.getElementById('footer-total-positions').textContent = 
-        dashboardData.total_positions.toLocaleString();
+        totalPositions.toLocaleString();
 }
 
 /**
