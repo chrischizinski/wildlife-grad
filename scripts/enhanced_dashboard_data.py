@@ -12,11 +12,15 @@ import re
 from typing import Dict, List, Optional
 
 
-def load_historical_data() -> List[Dict]:
-    """Load historical positions data."""
-    historical_file = Path("data/historical_positions.json")
-    if historical_file.exists():
-        with open(historical_file, 'r', encoding='utf-8') as f:
+def load_verified_graduate_data() -> List[Dict]:
+    """Load verified graduate assistantship positions data.
+    
+    Uses ML-classified data from verified_graduate_assistantships.json
+    instead of keyword-filtered historical data for accuracy.
+    """
+    verified_file = Path("data/verified_graduate_assistantships.json")
+    if verified_file.exists():
+        with open(verified_file, 'r', encoding='utf-8') as f:
             return json.load(f)
     return []
 
@@ -37,6 +41,35 @@ def parse_date(date_str: str) -> Optional[datetime]:
         pass
     
     return None
+
+
+def extract_salary_amount(salary_str: str) -> float:
+    """Extract numeric salary amount from salary string."""
+    if not salary_str or salary_str.lower() in ['none', 'commensurate / negotiable', 'negotiable']:
+        return 0
+    
+    # Remove common text and extract numbers
+    import re
+    # Look for patterns like $20,000 or $20k or $1,500 per month
+    patterns = [
+        r'\$([0-9,]+(?:\.[0-9]{2})?)',  # $20,000 or $20,000.00
+        r'([0-9,]+(?:\.[0-9]{2})?).*per.*year',  # 20,000 per year
+        r'([0-9,]+(?:\.[0-9]{2})?).*per.*month',  # 1,500 per month
+    ]
+    
+    for pattern in patterns:
+        match = re.search(pattern, salary_str.replace(',', ''))
+        if match:
+            try:
+                amount = float(match.group(1).replace(',', ''))
+                # Convert monthly to annual if needed
+                if 'per month' in salary_str.lower() or 'month' in salary_str.lower():
+                    amount *= 12
+                return amount
+            except:
+                continue
+    
+    return 0
 
 
 def extract_salary_value(salary_str: str) -> Optional[float]:
@@ -117,11 +150,13 @@ def consolidate_discipline(discipline: str) -> str:
     """Map old discipline categories to the 5 consolidated categories."""
     discipline_mapping = {
         # Fisheries Management and Conservation
+        'Fisheries & Aquatic Science': 'Fisheries Management and Conservation',
         'Fisheries Science': 'Fisheries Management and Conservation',
         'Fisheries Management and Conservation': 'Fisheries Management and Conservation',
         
         # Wildlife Management and Conservation  
-        'Wildlife Ecology': 'Wildlife Management and Conservation',
+        'Wildlife & Natural Resources': 'Wildlife Management and Conservation',
+        'Wildlife Ecology': 'Wildlife Management and Conservation', 
         'Wildlife Management and Conservation': 'Wildlife Management and Conservation',
         'Conservation Biology': 'Wildlife Management and Conservation',
         
@@ -155,20 +190,20 @@ def generate_discipline_analytics(positions: List[Dict]) -> Dict:
     })
     
     for pos in positions:
-        original_discipline = pos.get('discipline_primary', 'Other')
+        # Verified data uses 'discipline' field instead of 'discipline_primary'
+        original_discipline = pos.get('discipline', 'Other')
         # Consolidate to one of the 5 categories
         discipline = consolidate_discipline(original_discipline)
         
         discipline_data[discipline]['count'] += 1
         discipline_data[discipline]['positions'].append(pos)
         
-        # Only add salary data for graduate assistantships with non-zero salaries
-        is_graduate = any(tag in pos.get('tags', '').lower() 
-                         for tag in ['graduate', 'grad', 'phd', 'master'])
-        salary_adjusted = pos.get('salary_lincoln_adjusted', 0)
+        # All positions are pre-verified graduate assistantships
+        # Parse salary from the original salary string since verified data doesn't have lincoln_adjusted
         salary_original = pos.get('salary', '')
+        salary_adjusted = extract_salary_value(salary_original)
         
-        if is_graduate and salary_adjusted and salary_adjusted > 0:
+        if salary_adjusted and salary_adjusted > 0:
             # Convert monthly to annual if needed
             final_salary = convert_monthly_to_annual(salary_adjusted, salary_original)
             discipline_data[discipline]['grad_salaries'].append(final_salary)
@@ -226,9 +261,8 @@ def generate_time_series_data(positions: List[Dict], timeframes: List[str]) -> D
         filtered_positions = []
         for pos in positions:
             pub_date = parse_date(pos.get('published_date', ''))
-            is_graduate = any(tag in pos.get('tags', '').lower() 
-                             for tag in ['graduate', 'grad', 'phd', 'master'])
-            if pub_date and pub_date >= cutoff and is_graduate:
+            # All positions are pre-verified graduate assistantships
+            if pub_date and pub_date >= cutoff:
                 filtered_positions.append(pos)
         
         # Generate monthly counts overall and by discipline
@@ -241,7 +275,7 @@ def generate_time_series_data(positions: List[Dict], timeframes: List[str]) -> D
                 month_key = pub_date.strftime('%Y-%m')
                 monthly_counts[month_key] += 1
                 
-                original_discipline = pos.get('discipline_primary', 'Other')
+                original_discipline = pos.get('discipline', 'Other')
                 # Consolidate to one of the 5 categories
                 discipline = consolidate_discipline(original_discipline)
                 discipline_monthly[discipline][month_key] += 1
@@ -261,14 +295,16 @@ def generate_export_data(positions: List[Dict]) -> List[Dict]:
     
     for pos in positions:
         # Clean and standardize data for export
-        original_discipline_primary = pos.get('discipline_primary', '')
-        original_discipline_secondary = pos.get('discipline_secondary', '')
+        original_discipline_primary = pos.get('discipline', '')
+        original_discipline_secondary = ''  # Verified data doesn't have secondary disciplines
         
         # Apply salary conversion for export data
-        salary_adjusted = pos.get('salary_lincoln_adjusted', 0)
         salary_original = pos.get('salary', '')
+        salary_adjusted = extract_salary_value(salary_original)
         if salary_adjusted and salary_adjusted > 0:
             salary_adjusted = convert_monthly_to_annual(salary_adjusted, salary_original)
+        else:
+            salary_adjusted = 0
         
         clean_pos = {
             'title': pos.get('title', ''),
@@ -293,11 +329,11 @@ def generate_export_data(positions: List[Dict]) -> List[Dict]:
 
 def main():
     """Generate enhanced dashboard data."""
-    # Load historical data
-    positions = load_historical_data()
+    # Load verified graduate assistantship data
+    positions = load_verified_graduate_data()
     
     if not positions:
-        print("No historical data found. Run enhanced analysis first.")
+        print("No verified graduate assistantship data found. Run the main scraper first.")
         return
     
     print(f"Processing {len(positions)} positions for enhanced dashboard...")
@@ -317,11 +353,10 @@ def main():
                            key=lambda x: x[1]['total_positions'], 
                            reverse=True)[:10]
     
-    # Calculate 6-month graduate positions for consistency with discipline cards
+    # Calculate 6-month positions (all are pre-verified graduate assistantships)
     six_months_ago = datetime.now() - timedelta(days=180)
     six_month_grad_positions = [p for p in positions 
-                               if any(tag in p.get('tags', '').lower() for tag in ['graduate', 'grad', 'phd', 'master'])
-                               and parse_date(p.get('published_date', ''))
+                               if parse_date(p.get('published_date', ''))
                                and parse_date(p.get('published_date', '')) >= six_months_ago]
     
     # Create comprehensive dashboard data
@@ -331,11 +366,10 @@ def main():
         'overview': {
             'total_disciplines': len(discipline_analytics),
             'positions_with_salaries': len([p for p in six_month_grad_positions 
-                                           if p.get('salary_lincoln_adjusted', 0) > 0]),
+                                           if extract_salary_value(p.get('salary', ''))]),
             'graduate_positions': len(six_month_grad_positions),
             'recent_positions_30_days': len([p for p in positions 
-                                           if any(tag in p.get('tags', '').lower() for tag in ['graduate', 'grad', 'phd', 'master'])
-                                           and parse_date(p.get('published_date', '')) 
+                                           if parse_date(p.get('published_date', '')) 
                                            and parse_date(p.get('published_date', '')) >= (datetime.now() - timedelta(days=30))])
         },
         'discipline_analytics': discipline_analytics,
@@ -348,14 +382,14 @@ def main():
         },
         'salary_overview': {
             'positions_with_salary': len([p for p in six_month_grad_positions 
-                                        if p.get('salary_lincoln_adjusted', 0) > 0]),
-            'average_lincoln_adjusted': sum(convert_monthly_to_annual(p.get('salary_lincoln_adjusted', 0), p.get('salary', '')) 
+                                        if extract_salary_value(p.get('salary', ''))]),
+            'average_lincoln_adjusted': sum(convert_monthly_to_annual(extract_salary_value(p.get('salary', '')) or 0, p.get('salary', '')) 
                                           for p in six_month_grad_positions 
-                                          if p.get('salary_lincoln_adjusted', 0) > 0) / 
+                                          if extract_salary_value(p.get('salary', ''))) / 
                                        len([p for p in six_month_grad_positions 
-                                           if p.get('salary_lincoln_adjusted', 0) > 0]) if 
+                                           if extract_salary_value(p.get('salary', ''))]) if 
                                        len([p for p in six_month_grad_positions 
-                                           if p.get('salary_lincoln_adjusted', 0) > 0]) > 0 else 0
+                                           if extract_salary_value(p.get('salary', ''))]) > 0 else 0
         }
     }
     
