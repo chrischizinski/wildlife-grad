@@ -26,7 +26,7 @@ A comprehensive platform for tracking and analyzing graduate assistantship oppor
 - **Production-ready** with XSS protection and accessibility compliance
 
 ### 🔄 Automation Status
-- **Weekly Scraping**: Sundays at 6:00 AM UTC
+- **Weekly Scraping**: Every Sunday via GitHub Actions
 - **Dashboard Deployment**: Automatic on data updates
 - **Security Scanning**: Integrated vulnerability detection
 - **Historical Archiving**: Timestamped data preservation
