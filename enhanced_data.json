@@ -1,0 +1,290 @@
+{
+  "last_updated": "2025-07-06T06:39:47.556108",
+  "total_positions": 43,
+  "overview": {
+    "total_disciplines": 4,
+    "positions_with_salaries": 28,
+    "graduate_positions": 43,
+    "recent_positions_30_days": 27
+  },
+  "discipline_analytics": {
+    "Fisheries Management and Conservation": {
+      "total_positions": 3,
+      "salary_stats": {
+        "count": 3,
+        "mean": 23665.333333333332,
+        "median": 20000.0,
+        "min": 15996.0,
+        "max": 35000.0,
+        "range": 19004.0
+      },
+      "monthly_trends": {
+        "2025-06": 2,
+        "2025-04": 1
+      },
+      "grad_positions": 3
+    },
+    "Wildlife Management and Conservation": {
+      "total_positions": 9,
+      "salary_stats": {
+        "count": 6,
+        "mean": 25666.666666666668,
+        "median": 25000.0,
+        "min": 15000.0,
+        "max": 43000.0,
+        "range": 28000.0
+      },
+      "monthly_trends": {
+        "2025-06": 5,
+        "2025-05": 3,
+        "2025-01": 1
+      },
+      "grad_positions": 9
+    },
+    "Other": {
+      "total_positions": 31,
+      "salary_stats": {
+        "count": 18,
+        "mean": 32870.94666666667,
+        "median": 28000.0,
+        "min": 13250.0,
+        "max": 92333.04000000001,
+        "range": 79083.04000000001
+      },
+      "monthly_trends": {
+        "2025-07": 3,
+        "2025-05": 4,
+        "2025-06": 18,
+        "2025-04": 2,
+        "2024-11": 2,
+        "2025-03": 1,
+        "2024-10": 1
+      },
+      "grad_positions": 22
+    },
+    "Habitat and Environmental Science": {
+      "total_positions": 3,
+      "salary_stats": {
+        "count": 2,
+        "mean": 21000.0,
+        "median": 22000.0,
+        "min": 20000.0,
+        "max": 22000.0,
+        "range": 2000.0
+      },
+      "monthly_trends": {
+        "2025-06": 2,
+        "2025-05": 1
+      },
+      "grad_positions": 3
+    }
+  },
+  "time_series": {
+    "1_month": {
+      "total_monthly": {
+        "2025-06": 24,
+        "2025-07": 3
+      },
+      "discipline_monthly": {
+        "Fisheries Management and Conservation": {
+          "2025-06": 1
+        },
+        "Wildlife Management and Conservation": {
+          "2025-06": 5
+        },
+        "Other": {
+          "2025-07": 3,
+          "2025-06": 17
+        },
+        "Habitat and Environmental Science": {
+          "2025-06": 1
+        }
+      },
+      "position_count": 27
+    },
+    "6_months": {
+      "total_monthly": {
+        "2025-06": 27,
+        "2025-07": 3,
+        "2025-05": 8,
+        "2025-04": 3,
+        "2025-01": 1,
+        "2025-03": 1
+      },
+      "discipline_monthly": {
+        "Fisheries Management and Conservation": {
+          "2025-06": 2,
+          "2025-04": 1
+        },
+        "Wildlife Management and Conservation": {
+          "2025-06": 5,
+          "2025-05": 3,
+          "2025-01": 1
+        },
+        "Other": {
+          "2025-07": 3,
+          "2025-05": 4,
+          "2025-06": 18,
+          "2025-04": 2,
+          "2025-03": 1
+        },
+        "Habitat and Environmental Science": {
+          "2025-06": 2,
+          "2025-05": 1
+        }
+      },
+      "position_count": 43
+    },
+    "1_year": {
+      "total_monthly": {
+        "2025-06": 27,
+        "2025-07": 3,
+        "2025-05": 8,
+        "2025-04": 3,
+        "2025-01": 1,
+        "2024-11": 2,
+        "2025-03": 1,
+        "2024-10": 1
+      },
+      "discipline_monthly": {
+        "Fisheries Management and Conservation": {
+          "2025-06": 2,
+          "2025-04": 1
+        },
+        "Wildlife Management and Conservation": {
+          "2025-06": 5,
+          "2025-05": 3,
+          "2025-01": 1
+        },
+        "Other": {
+          "2025-07": 3,
+          "2025-05": 4,
+          "2025-06": 18,
+          "2025-04": 2,
+          "2024-11": 2,
+          "2025-03": 1,
+          "2024-10": 1
+        },
+        "Habitat and Environmental Science": {
+          "2025-06": 2,
+          "2025-05": 1
+        }
+      },
+      "position_count": 46
+    },
+    "all_time": {
+      "total_monthly": {
+        "2025-06": 27,
+        "2025-07": 3,
+        "2025-05": 8,
+        "2025-04": 3,
+        "2025-01": 1,
+        "2024-11": 2,
+        "2025-03": 1,
+        "2024-10": 1
+      },
+      "discipline_monthly": {
+        "Fisheries Management and Conservation": {
+          "2025-06": 2,
+          "2025-04": 1
+        },
+        "Wildlife Management and Conservation": {
+          "2025-06": 5,
+          "2025-05": 3,
+          "2025-01": 1
+        },
+        "Other": {
+          "2025-07": 3,
+          "2025-05": 4,
+          "2025-06": 18,
+          "2025-04": 2,
+          "2024-11": 2,
+          "2025-03": 1,
+          "2024-10": 1
+        },
+        "Habitat and Environmental Science": {
+          "2025-06": 2,
+          "2025-05": 1
+        }
+      },
+      "position_count": 46
+    }
+  },
+  "top_disciplines": {
+    "Other": {
+      "total_positions": 31,
+      "salary_stats": {
+        "count": 18,
+        "mean": 32870.94666666667,
+        "median": 28000.0,
+        "min": 13250.0,
+        "max": 92333.04000000001,
+        "range": 79083.04000000001
+      },
+      "monthly_trends": {
+        "2025-07": 3,
+        "2025-05": 4,
+        "2025-06": 18,
+        "2025-04": 2,
+        "2024-11": 2,
+        "2025-03": 1,
+        "2024-10": 1
+      },
+      "grad_positions": 22
+    },
+    "Wildlife Management and Conservation": {
+      "total_positions": 9,
+      "salary_stats": {
+        "count": 6,
+        "mean": 25666.666666666668,
+        "median": 25000.0,
+        "min": 15000.0,
+        "max": 43000.0,
+        "range": 28000.0
+      },
+      "monthly_trends": {
+        "2025-06": 5,
+        "2025-05": 3,
+        "2025-01": 1
+      },
+      "grad_positions": 9
+    },
+    "Fisheries Management and Conservation": {
+      "total_positions": 3,
+      "salary_stats": {
+        "count": 3,
+        "mean": 23665.333333333332,
+        "median": 20000.0,
+        "min": 15996.0,
+        "max": 35000.0,
+        "range": 19004.0
+      },
+      "monthly_trends": {
+        "2025-06": 2,
+        "2025-04": 1
+      },
+      "grad_positions": 3
+    },
+    "Habitat and Environmental Science": {
+      "total_positions": 3,
+      "salary_stats": {
+        "count": 2,
+        "mean": 21000.0,
+        "median": 22000.0,
+        "min": 20000.0,
+        "max": 22000.0,
+        "range": 2000.0
+      },
+      "monthly_trends": {
+        "2025-06": 2,
+        "2025-05": 1
+      },
+      "grad_positions": 3
+    }
+  },
+  "geographic_analytics": {},
+  "salary_overview": {
+    "positions_with_salary": 28,
+    "average_lincoln_adjusted": 28970.465714285714
+  }
+}
