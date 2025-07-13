@@ -681,7 +681,29 @@ class EnhancedAnalyzer:
             if 'description' not in pos_data:
                 pos_data['description'] = ''
             
-            position = JobPosition(**pos_data)
+            # Create a cleaned position dict with only JobPosition fields
+            cleaned_pos_data = {}
+            job_position_fields = {
+                'title', 'organization', 'location', 'salary', 'starting_date', 
+                'published_date', 'tags', 'description', 'discipline_primary', 
+                'discipline_secondary', 'salary_lincoln_adjusted', 'cost_of_living_index',
+                'geographic_region', 'is_graduate_position', 'position_type', 
+                'grad_confidence', 'first_seen', 'last_updated'
+            }
+            
+            for field in job_position_fields:
+                if field in pos_data:
+                    cleaned_pos_data[field] = pos_data[field]
+                elif field == 'description':
+                    cleaned_pos_data[field] = ''
+                elif field in ['salary_lincoln_adjusted', 'cost_of_living_index', 'grad_confidence']:
+                    cleaned_pos_data[field] = 0.0
+                elif field in ['is_graduate_position']:
+                    cleaned_pos_data[field] = False
+                else:
+                    cleaned_pos_data[field] = ''
+            
+            position = JobPosition(**cleaned_pos_data)
             
             # Detect if this is truly a graduate position
             is_grad, position_type, confidence = self.grad_detector.is_graduate_position(position)
