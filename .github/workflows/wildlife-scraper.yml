@@ -77,7 +77,17 @@ jobs:
         
     - name: 📋 Copy data to dashboard directory
       run: |
-        # Copy only analytics data to dashboard directory for GitHub Pages
+        # Copy comprehensive data files to dashboard directory for GitHub Pages
+        if [ -f "data/verified_graduate_assistantships.json" ]; then
+          cp data/verified_graduate_assistantships.json dashboard/
+          echo "Copied verified graduate assistantships data ($(jq length data/verified_graduate_assistantships.json) positions)"
+        fi
+        
+        if [ -f "data/verified_graduate_assistantships.json" ]; then
+          cp data/verified_graduate_assistantships.json dashboard/export_data.json
+          echo "Copied export data (for compatibility)"
+        fi
+        
         if [ -f "dashboard/enhanced_data.json" ]; then
           echo "Analytics dashboard data ready"
         else
