@@ -320,7 +320,10 @@ def generate_export_data(positions: List[Dict]) -> List[Dict]:
             'published_date': pos.get('published_date', ''),
             'tags': pos.get('tags', ''),
             'first_seen': pos.get('first_seen', ''),
-            'last_updated': pos.get('last_updated', '')
+            'last_updated': pos.get('last_updated', ''),
+            'scraped_at': pos.get('scraped_at', ''),
+            'scrape_run_id': pos.get('scrape_run_id', ''),
+            'scraper_version': pos.get('scraper_version', '')
         }
         export_data.append(clean_pos)
     
@@ -359,6 +362,21 @@ def main():
                                if parse_date(p.get('published_date', ''))
                                and parse_date(p.get('published_date', '')) >= six_months_ago]
     
+    # Get latest scrape information
+    latest_scrape_info = {}
+    if positions:
+        # Find the most recent scrape
+        scraped_positions = [p for p in positions if p.get('scraped_at')]
+        if scraped_positions:
+            latest_scraped = max(scraped_positions, key=lambda p: p.get('scraped_at', ''))
+            latest_scrape_info = {
+                'last_scraped': latest_scraped.get('scraped_at', ''),
+                'scrape_run_id': latest_scraped.get('scrape_run_id', ''),
+                'scraper_version': latest_scraped.get('scraper_version', ''),
+                'positions_in_latest_scrape': len([p for p in positions 
+                                                 if p.get('scrape_run_id') == latest_scraped.get('scrape_run_id', '')])
+            }
+
     # Create comprehensive dashboard data
     dashboard_data = {
         'last_updated': datetime.now().isoformat(),
@@ -372,6 +390,7 @@ def main():
                                            if parse_date(p.get('published_date', '')) 
                                            and parse_date(p.get('published_date', '')) >= (datetime.now() - timedelta(days=30))])
         },
+        'scrape_info': latest_scrape_info,
         'discipline_analytics': discipline_analytics,
         'time_series': time_series,
         'top_disciplines': {name: data for name, data in top_disciplines},

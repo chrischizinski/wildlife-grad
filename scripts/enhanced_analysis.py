@@ -50,6 +50,9 @@ class JobPosition:
     grad_confidence: float = 0.0
     first_seen: str = ""
     last_updated: str = ""
+    scraped_at: str = ""  # When this position was scraped
+    scrape_run_id: str = ""  # Unique identifier for the scrape run
+    scraper_version: str = ""  # Version of the scraper used
     
     def to_dict(self) -> Dict:
         """Convert to dictionary for JSON serialization."""
@@ -71,7 +74,10 @@ class JobPosition:
             'position_type': self.position_type,
             'grad_confidence': self.grad_confidence,
             'first_seen': self.first_seen,
-            'last_updated': self.last_updated
+            'last_updated': self.last_updated,
+            'scraped_at': self.scraped_at,
+            'scrape_run_id': self.scrape_run_id,
+            'scraper_version': self.scraper_version
         }
 
 
@@ -688,7 +694,8 @@ class EnhancedAnalyzer:
                 'published_date', 'tags', 'description', 'discipline_primary', 
                 'discipline_secondary', 'salary_lincoln_adjusted', 'cost_of_living_index',
                 'geographic_region', 'is_graduate_position', 'position_type', 
-                'grad_confidence', 'first_seen', 'last_updated'
+                'grad_confidence', 'first_seen', 'last_updated', 'scraped_at',
+                'scrape_run_id', 'scraper_version'
             }
             
             for field in job_position_fields:
@@ -702,6 +709,14 @@ class EnhancedAnalyzer:
                     cleaned_pos_data[field] = False
                 else:
                     cleaned_pos_data[field] = ''
+            
+            # Ensure scrape metadata is captured
+            if not cleaned_pos_data.get('scraped_at'):
+                cleaned_pos_data['scraped_at'] = datetime.now().isoformat()
+            if not cleaned_pos_data.get('scrape_run_id'):
+                cleaned_pos_data['scrape_run_id'] = f"analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            if not cleaned_pos_data.get('scraper_version'):
+                cleaned_pos_data['scraper_version'] = "enhanced_analysis_v1.0"
             
             position = JobPosition(**cleaned_pos_data)
             
