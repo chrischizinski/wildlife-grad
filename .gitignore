@@ -175,3 +175,18 @@ cython_debug/
 
 # Claude configuration files
 .claude/
+
+# Project-specific temporary files
+data/*_opportunities_*.json
+data/cleaned_*.json
+data/page_*.png
+data/page_*.html
+data/manual_review_*.txt
+data/manual_review_*.csv
+*.log
+dependency-scan.json
+inspect_*.py
+test_*.py
+parse_*.py
+enhanced_wildlife_scraper.py
+targeted_*.py

@@ -3,6 +3,9 @@
 ## Project Overview
 This is a comprehensive platform for tracking and analyzing graduate assistantship opportunities in wildlife, fisheries, and natural resources. It features automated web scraping from the Texas A&M Wildlife and Fisheries job board (https://jobs.rwfm.tamu.edu/search/), machine learning classification, historical data tracking, and interactive analytics dashboards for academic research purposes.
 
+## Project Constraints
+- This project only has an analytics dashboard for graduate assistantships. We do not want individual positions on this site.
+
 ## Current Architecture
 
 ### 🤖 Core Scraping Engine
