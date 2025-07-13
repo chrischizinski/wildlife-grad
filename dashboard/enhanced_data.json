@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-07-13T17:14:36.349712",
+  "last_updated": "2025-07-13T17:27:07.122427",
   "total_positions": 272,
   "overview": {
     "total_disciplines": 1,
@@ -135,11 +135,11 @@
   },
   "geographic_analytics": {
     "Remote/Multiple": 22,
-    "Southeast": 59,
-    "Southwest": 110,
     "West": 15,
+    "Northeast": 33,
     "Midwest": 33,
-    "Northeast": 33
+    "Southeast": 59,
+    "Southwest": 110
   },
   "salary_overview": {
     "positions_with_salary": 246,
