@@ -1,4 +1,4 @@
-name: Wildlife Graduate Assistantship Incremental Update
+name: Wildlife Graduate Assistantship Enhanced Pipeline
 
 on:
   schedule:
@@ -13,7 +13,7 @@ on:
       - 'scripts/**'
 
 jobs:
-  incremental-update-and-deploy:
+  enhanced-pipeline-and-deploy:
     runs-on: ubuntu-latest
     
     permissions:
@@ -64,15 +64,16 @@ jobs:
         mkdir -p dashboard/data
         echo "Data directories created"
         
-    - name: 🔄 Run incremental update pipeline
+    - name: 🔄 Run enhanced data pipeline
       run: |
-        echo "Starting incremental update pipeline..."
-        echo "1) Scraping new jobs from past week"
-        echo "2a) Adding to historical raw data file"
-        echo "2b) Post-processing for graduate positions"
-        echo "3) Generating time-filtered dashboard data"
-        python scripts/incremental_update_pipeline.py
-        echo "Incremental update pipeline completed successfully"
+        echo "Starting enhanced data pipeline..."
+        echo "1) Scraping new jobs from wildlife job board"
+        echo "2) Running ML-powered enhanced analysis"
+        echo "3) Generating dashboard data with analytics"
+        python wildlife_job_scraper.py
+        python scripts/enhanced_analysis.py
+        python scripts/enhanced_dashboard_data.py
+        echo "Enhanced data pipeline completed successfully"
         
     - name: 📋 Copy data to dashboard directory
       run: |
@@ -90,19 +91,24 @@ jobs:
         timestamp=$(date +"%Y%m%d_%H%M%S")
         
         # Archive historical data files as snapshots
-        if [ -f "data/historical_all_positions.json" ]; then
-          cp data/historical_all_positions.json "data/archive/historical_all_${timestamp}.json"
-          echo "Archived historical all positions snapshot"
+        if [ -f "data/historical_positions.json" ]; then
+          cp data/historical_positions.json "data/archive/historical_positions_${timestamp}.json"
+          echo "Archived historical positions snapshot"
         fi
         
-        if [ -f "data/historical_graduate_positions.json" ]; then
-          cp data/historical_graduate_positions.json "data/archive/historical_grad_${timestamp}.json"
-          echo "Archived historical graduate positions snapshot"
+        if [ -f "data/verified_graduate_assistantships.json" ]; then
+          cp data/verified_graduate_assistantships.json "data/archive/verified_grad_${timestamp}.json"
+          echo "Archived verified graduate assistantships snapshot"
         fi
         
-        if [ -f "dashboard/enhanced_data.json" ]; then
-          cp dashboard/enhanced_data.json "data/archive/enhanced_${timestamp}.json"
+        if [ -f "data/enhanced_data.json" ]; then
+          cp data/enhanced_data.json "data/archive/enhanced_${timestamp}.json"
           echo "Archived enhanced dashboard data"
+        fi
+        
+        if [ -f "data/enhanced_analysis.json" ]; then
+          cp data/enhanced_analysis.json "data/archive/analysis_${timestamp}.json"
+          echo "Archived enhanced analysis data"
         fi
         
         echo "Data archived with timestamp: ${timestamp}"
@@ -120,7 +126,7 @@ jobs:
           echo "No changes to commit"
         else
           # Create commit message
-          git commit -m "🤖 Weekly incremental update - $(date +'%Y-%m-%d %H:%M UTC')"
+          git commit -m "🤖 Weekly enhanced pipeline update - $(date +'%Y-%m-%d %H:%M UTC')"
           git push origin main
           echo "Changes committed and pushed to main branch"
         fi
@@ -148,6 +154,6 @@ jobs:
     - name: 🚨 Report Failure
       if: failure()
       run: |
-        echo "❌ Wildlife incremental update pipeline failed!"
+        echo "❌ Wildlife enhanced pipeline failed!"
         echo "Check the logs above for detailed error information"
         exit 1

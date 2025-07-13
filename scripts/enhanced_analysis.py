@@ -574,7 +574,14 @@ class HistoricalDataManager:
         """Load existing historical data."""
         if self.historical_file.exists():
             with open(self.historical_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                data = json.load(f)
+                # Handle both old format (list) and new format (dict with positions key)
+                if isinstance(data, list):
+                    return data
+                elif isinstance(data, dict) and 'positions' in data:
+                    return data['positions']
+                else:
+                    return []
         return []
     
     def generate_position_id(self, position: Dict) -> str:
