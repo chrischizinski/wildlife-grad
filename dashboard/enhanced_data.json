@@ -1,100 +1,148 @@
 {
-  "last_updated": "2025-07-12T12:07:48.591520",
-  "time_periods": {
-    "6_months": {
-      "total_positions": 26,
-      "cutoff_date": "2025-01-13T12:07:48.591520",
-      "positions_with_salary": 26,
-      "avg_salary": 21685.04139471901,
-      "geographic_distribution": {
-        "Southwest": 10,
-        "West": 2,
-        "Southeast": 6,
-        "Midwest": 3,
-        "Remote/Multiple": 2,
-        "Northeast": 3
-      },
-      "discipline_distribution": {
-        "Other": 10,
-        "Quantitative Ecology": 2,
-        "Human Dimensions": 1,
-        "Wildlife Ecology": 6,
-        "Fisheries Science": 3,
-        "Ecosystem Ecology": 1,
-        "Conservation Biology": 3
+  "last_updated": "2025-07-13T17:14:36.349712",
+  "total_positions": 272,
+  "overview": {
+    "total_disciplines": 1,
+    "positions_with_salaries": 246,
+    "graduate_positions": 272,
+    "recent_positions_30_days": 22
+  },
+  "discipline_analytics": {
+    "Other": {
+      "total_positions": 283,
+      "salary_stats": {
+        "count": 257,
+        "mean": 26406.80544747082,
+        "median": 27794.0,
+        "min": 15000.0,
+        "max": 43000.0,
+        "range": 28000.0
       },
       "monthly_trends": {
-        "2025-06": 15,
-        "2025-05": 5,
-        "2025-04": 2,
-        "2025-03": 1,
-        "2025-02": 2,
-        "2025-01": 1
-      }
+        "2025-06": 151,
+        "2025-05": 55,
+        "2025-04": 22,
+        "2025-03": 11,
+        "2025-02": 22,
+        "2024-08": 11,
+        "2025-01": 11
+      },
+      "grad_positions": 283
+    }
+  },
+  "time_series": {
+    "1_month": {
+      "total_monthly": {
+        "2025-06": 22
+      },
+      "discipline_monthly": {
+        "Other": {
+          "2025-06": 22
+        }
+      },
+      "position_count": 22
+    },
+    "6_months": {
+      "total_monthly": {
+        "2025-06": 151,
+        "2025-05": 55,
+        "2025-04": 22,
+        "2025-03": 11,
+        "2025-02": 22,
+        "2025-01": 11
+      },
+      "discipline_monthly": {
+        "Other": {
+          "2025-06": 151,
+          "2025-05": 55,
+          "2025-04": 22,
+          "2025-03": 11,
+          "2025-02": 22,
+          "2025-01": 11
+        }
+      },
+      "position_count": 272
     },
     "1_year": {
-      "total_positions": 27,
-      "cutoff_date": "2024-07-12T12:07:48.591520",
-      "positions_with_salary": 27,
-      "avg_salary": 21702.550634851334,
-      "geographic_distribution": {
-        "Southwest": 11,
-        "West": 2,
-        "Southeast": 6,
-        "Midwest": 3,
-        "Remote/Multiple": 2,
-        "Northeast": 3
+      "total_monthly": {
+        "2025-06": 151,
+        "2025-05": 55,
+        "2025-04": 22,
+        "2025-03": 11,
+        "2025-02": 22,
+        "2024-08": 11,
+        "2025-01": 11
       },
-      "discipline_distribution": {
-        "Other": 10,
-        "Quantitative Ecology": 2,
-        "Human Dimensions": 1,
-        "Wildlife Ecology": 6,
-        "Fisheries Science": 3,
-        "Ecosystem Ecology": 2,
-        "Conservation Biology": 3
+      "discipline_monthly": {
+        "Other": {
+          "2025-06": 151,
+          "2025-05": 55,
+          "2025-04": 22,
+          "2025-03": 11,
+          "2025-02": 22,
+          "2024-08": 11,
+          "2025-01": 11
+        }
       },
-      "monthly_trends": {
-        "2025-06": 15,
-        "2025-05": 5,
-        "2025-04": 2,
-        "2025-03": 1,
-        "2025-02": 2,
-        "2024-08": 1,
-        "2025-01": 1
-      }
+      "position_count": 283
     },
     "all_time": {
-      "total_positions": 27,
-      "cutoff_date": "2020-01-01T00:00:00",
-      "positions_with_salary": 27,
-      "avg_salary": 21702.550634851334,
-      "geographic_distribution": {
-        "Southwest": 11,
-        "West": 2,
-        "Southeast": 6,
-        "Midwest": 3,
-        "Remote/Multiple": 2,
-        "Northeast": 3
+      "total_monthly": {
+        "2025-06": 151,
+        "2025-05": 55,
+        "2025-04": 22,
+        "2025-03": 11,
+        "2025-02": 22,
+        "2024-08": 11,
+        "2025-01": 11
       },
-      "discipline_distribution": {
-        "Other": 10,
-        "Quantitative Ecology": 2,
-        "Human Dimensions": 1,
-        "Wildlife Ecology": 6,
-        "Fisheries Science": 3,
-        "Ecosystem Ecology": 2,
-        "Conservation Biology": 3
+      "discipline_monthly": {
+        "Other": {
+          "2025-06": 151,
+          "2025-05": 55,
+          "2025-04": 22,
+          "2025-03": 11,
+          "2025-02": 22,
+          "2024-08": 11,
+          "2025-01": 11
+        }
+      },
+      "position_count": 283
+    }
+  },
+  "top_disciplines": {
+    "Other": {
+      "total_positions": 283,
+      "salary_stats": {
+        "count": 257,
+        "mean": 26406.80544747082,
+        "median": 27794.0,
+        "min": 15000.0,
+        "max": 43000.0,
+        "range": 28000.0
       },
       "monthly_trends": {
-        "2025-06": 15,
-        "2025-05": 5,
-        "2025-04": 2,
-        "2025-03": 1,
-        "2025-02": 2,
-        "2024-08": 1,
-        "2025-01": 1
-      }
+        "2025-06": 151,
+        "2025-05": 55,
+        "2025-04": 22,
+        "2025-03": 11,
+        "2025-02": 22,
+        "2024-08": 11,
+        "2025-01": 11
+      },
+      "grad_positions": 283
     }
+  },
+  "geographic_analytics": {
+    "Remote/Multiple": 22,
+    "Southeast": 59,
+    "Southwest": 110,
+    "West": 15,
+    "Midwest": 33,
+    "Northeast": 33
+  },
+  "salary_overview": {
+    "positions_with_salary": 246,
+    "average_lincoln_adjusted": 26648.573170731706
   }
 }
