@@ -75,7 +75,7 @@
                                             </h6>
                                             <p class="mb-3">
                                                 This dashboard provides comprehensive analytics for <strong>wildlife and fisheries graduate assistantship opportunities</strong> 
-                                                scraped from the Texas A&M Wildlife and Fisheries job board (<a href="https://jobs.rwfm.tamu.edu/search/" target="_blank" rel="noopener">jobs.rwfm.tamu.edu</a>). 
+                                                collected from academic job boards. 
                                                 The system automatically identifies and analyzes genuine graduate assistantships, fellowships, and PhD/Masters positions 
                                                 while filtering out internships, technician roles, and professional positions.
                                             </p>
@@ -84,7 +84,7 @@
                                                 <i class="fas fa-sync-alt me-2"></i>Data Updates & Automation
                                             </h6>
                                             <ul class="mb-3">
-                                                <li><strong>Weekly Scraping:</strong> Automated data collection every Sunday at 6:00 AM UTC via GitHub Actions</li>
+                                                <li><strong>Weekly Updates:</strong> Automated data collection and processing via GitHub Actions</li>
                                                 <li><strong>Real-time Processing:</strong> Advanced classification algorithms analyze job descriptions, requirements, and project details</li>
                                                 <li><strong>Historical Tracking:</strong> Time-series data maintained for trend analysis and seasonal pattern detection</li>
                                                 <li><strong>Dashboard Deployment:</strong> Automatic updates to GitHub Pages within minutes of new data collection</li>
@@ -434,42 +434,40 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <div class="export-option">
                                     <div class="text-center p-3">
-                                        <i class="fas fa-chart-bar fa-3x text-primary mb-3"></i>
-                                        <h6>Analytics Report</h6>
-                                        <p class="text-muted small">Comprehensive PDF report with all insights</p>
-                                        <button class="btn btn-primary btn-sm" id="export-pdf">
-                                            <i class="fas fa-file-pdf me-1"></i>Generate PDF
-                                        </button>
+                                        <i class="fas fa-database fa-3x text-primary mb-3"></i>
+                                        <h6>Historical Graduate Positions</h6>
+                                        <p class="text-muted small">Complete dataset of verified graduate assistantships with individual listings</p>
+                                        <a href="../data/historical_graduate_positions.json" class="btn btn-primary btn-sm" download="wildlife_graduate_positions.json">
+                                            <i class="fas fa-download me-1"></i>Download Graduate Positions JSON
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <div class="export-option">
                                     <div class="text-center p-3">
-                                        <i class="fas fa-table fa-3x text-success mb-3"></i>
-                                        <h6>Raw Data</h6>
-                                        <p class="text-muted small">CSV export for statistical analysis</p>
-                                        <button class="btn btn-success btn-sm" id="export-csv">
-                                            <i class="fas fa-file-csv me-1"></i>Download CSV
-                                        </button>
+                                        <i class="fas fa-archive fa-3x text-success mb-3"></i>
+                                        <h6>All Historical Positions</h6>
+                                        <p class="text-muted small">Complete raw dataset including all collected positions (graduate and non-graduate)</p>
+                                        <a href="../data/historical_all_positions.json" class="btn btn-success btn-sm" download="wildlife_all_positions.json">
+                                            <i class="fas fa-download me-1"></i>Download All Positions JSON
+                                        </a>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div class="col-md-4 mb-3">
-                                <div class="export-option">
-                                    <div class="text-center p-3">
-                                        <i class="fas fa-code fa-3x text-info mb-3"></i>
-                                        <h6>API Data</h6>
-                                        <p class="text-muted small">JSON format for developers</p>
-                                        <button class="btn btn-info btn-sm" id="export-json">
-                                            <i class="fas fa-file-code me-1"></i>Download JSON
-                                        </button>
-                                    </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Data Usage:</strong> These datasets contain individual job listings for research purposes. 
+                                    The analytics dashboard above shows only aggregated trends and insights. 
+                                    Data is updated weekly via automated collection from academic job boards.
                                 </div>
                             </div>
                         </div>
@@ -496,7 +494,7 @@
                 <div class="col-md-4">
                     <h6 class="text-primary mb-2">Data & Updates</h6>
                     <div class="small text-muted">
-                        <p class="mb-1"><i class="fas fa-sync-alt me-2"></i>Weekly automated scraping</p>
+                        <p class="mb-1"><i class="fas fa-sync-alt me-2"></i>Weekly automated updates</p>
                         <p class="mb-1"><i class="fas fa-robot me-2"></i>AI-powered classification</p>
                         <p class="mb-0"><i class="fas fa-github me-2"></i>Open source methodology</p>
                     </div>

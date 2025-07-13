@@ -41,7 +41,7 @@ class ScraperConfig:
     
     base_url: str = "https://jobs.rwfm.tamu.edu/search/"
     keywords: str = "(Master) OR (PhD) OR (Graduate)"
-    date_filter: str = "Last14Days"  # Options: Anytime, Last30Days, Last14Days, Last7Days, Last48Hours
+    date_filter: str = "Last7Days"  # Options: Anytime, Last30Days, Last14Days, Last7Days, Last48Hours
     output_dir: Path = Path("data")
     log_file: str = "scrape_jobs.log"
     page_size: int = 50
@@ -1066,6 +1066,9 @@ class WildlifeJobScraper:
             self.set_page_size()
             self.driver.execute_script("window.scrollTo(0, 0);")
             self.enter_search_keywords()
+            
+            # Apply date filter for weekly automation
+            self.set_date_filter()
             
             # Extract jobs from first page
             all_jobs = self.extract_jobs_from_page()

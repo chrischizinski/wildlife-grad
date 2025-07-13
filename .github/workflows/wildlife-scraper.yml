@@ -1,4 +1,4 @@
-name: Wildlife Graduate Assistantship Scraper
+name: Wildlife Graduate Assistantship Incremental Update
 
 on:
   schedule:
@@ -13,7 +13,7 @@ on:
       - 'scripts/**'
 
 jobs:
-  scrape-and-deploy:
+  incremental-update-and-deploy:
     runs-on: ubuntu-latest
     
     permissions:
@@ -64,46 +64,23 @@ jobs:
         mkdir -p dashboard/data
         echo "Data directories created"
         
-    - name: 🔍 Run wildlife job scraper
+    - name: 🔄 Run incremental update pipeline
       run: |
-        echo "Starting wildlife job scraper..."
-        python wildlife_job_scraper.py
-        echo "Scraping completed successfully"
-        
-    - name: 📊 Generate enhanced analysis
-      run: |
-        if [ -f "scripts/enhanced_analysis.py" ]; then
-          echo "Generating enhanced analysis..."
-          python scripts/enhanced_analysis.py
-        else
-          echo "Enhanced analysis script not found, skipping..."
-        fi
-        
-    - name: 📈 Generate dashboard data
-      run: |
-        if [ -f "scripts/enhanced_dashboard_data.py" ]; then
-          echo "Generating dashboard data..."
-          python scripts/enhanced_dashboard_data.py
-        else
-          echo "Dashboard data script not found, skipping..."
-        fi
+        echo "Starting incremental update pipeline..."
+        echo "1) Scraping new jobs from past week"
+        echo "2a) Adding to historical raw data file"
+        echo "2b) Post-processing for graduate positions"
+        echo "3) Generating time-filtered dashboard data"
+        python scripts/incremental_update_pipeline.py
+        echo "Incremental update pipeline completed successfully"
         
     - name: 📋 Copy data to dashboard directory
       run: |
-        # Copy main data files to dashboard directory for GitHub Pages
-        if [ -f "data/verified_graduate_assistantships.json" ]; then
-          cp data/verified_graduate_assistantships.json dashboard/
-          echo "Copied verified graduate assistantships data"
-        fi
-        
-        if [ -f "data/enhanced_data.json" ]; then
-          cp data/enhanced_data.json dashboard/
-          echo "Copied enhanced data"
-        fi
-        
-        if [ -f "data/graduate_assistantships.json" ]; then
-          cp data/graduate_assistantships.json dashboard/export_data.json
-          echo "Copied export data"
+        # Copy only analytics data to dashboard directory for GitHub Pages
+        if [ -f "dashboard/enhanced_data.json" ]; then
+          echo "Analytics dashboard data ready"
+        else
+          echo "Warning: Enhanced dashboard data not found"
         fi
         
         echo "Dashboard data files ready"
@@ -112,17 +89,20 @@ jobs:
       run: |
         timestamp=$(date +"%Y%m%d_%H%M%S")
         
-        # Archive main data files
-        if [ -f "data/graduate_assistantships.json" ]; then
-          cp data/graduate_assistantships.json "data/archive/jobs_${timestamp}.json"
+        # Archive historical data files as snapshots
+        if [ -f "data/historical_all_positions.json" ]; then
+          cp data/historical_all_positions.json "data/archive/historical_all_${timestamp}.json"
+          echo "Archived historical all positions snapshot"
         fi
         
-        if [ -f "data/graduate_assistantships.csv" ]; then
-          cp data/graduate_assistantships.csv "data/archive/jobs_${timestamp}.csv"
+        if [ -f "data/historical_graduate_positions.json" ]; then
+          cp data/historical_graduate_positions.json "data/archive/historical_grad_${timestamp}.json"
+          echo "Archived historical graduate positions snapshot"
         fi
         
-        if [ -f "data/enhanced_data.json" ]; then
-          cp data/enhanced_data.json "data/archive/enhanced_${timestamp}.json"
+        if [ -f "dashboard/enhanced_data.json" ]; then
+          cp dashboard/enhanced_data.json "data/archive/enhanced_${timestamp}.json"
+          echo "Archived enhanced dashboard data"
         fi
         
         echo "Data archived with timestamp: ${timestamp}"
@@ -140,7 +120,7 @@ jobs:
           echo "No changes to commit"
         else
           # Create commit message
-          git commit -m "🤖 Weekly wildlife job scrape - $(date +'%Y-%m-%d %H:%M UTC')"
+          git commit -m "🤖 Weekly incremental update - $(date +'%Y-%m-%d %H:%M UTC')"
           git push origin main
           echo "Changes committed and pushed to main branch"
         fi
@@ -160,13 +140,14 @@ jobs:
     - name: 📈 Report Success
       if: success()
       run: |
-        echo "✅ Wildlife Graduate Assistantship Scraper completed successfully!"
-        echo "📊 Dashboard deployed to GitHub Pages"
-        echo "🔗 Available at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+        echo "✅ Wildlife Graduate Assistantship Analytics completed successfully!"
+        echo "📊 Analytics dashboard deployed to GitHub Pages"
+        echo "🔗 Available at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/analytics_dashboard.html"
+        echo "📁 Historical files updated with new data"
         
     - name: 🚨 Report Failure
       if: failure()
       run: |
-        echo "❌ Wildlife scraper failed!"
+        echo "❌ Wildlife incremental update pipeline failed!"
         echo "Check the logs above for detailed error information"
         exit 1
