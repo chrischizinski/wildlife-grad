@@ -1,13 +1,13 @@
 {
   "metadata": {
-    "merge_timestamp": "2025-07-13T14:50:25.172235+00:00",
-    "total_positions": 436,
+    "merge_timestamp": "2025-07-13T14:51:24.394842+00:00",
+    "total_positions": 437,
     "merge_stats": {
       "historical_preserved": 436,
-      "new_added": 0,
-      "updated": 1,
+      "new_added": 1,
+      "updated": 0,
       "enhanced": 0,
-      "preserved": 435
+      "preserved": 436
     },
     "data_sources": [
       "historical_positions.json",
@@ -5806,7 +5806,7 @@
       "scraped_at": "2025-07-13T14:45:47.281280+00:00",
       "scraper_version": "4.0-targeted",
       "first_seen": "2025-07-13T14:47:11.244773+00:00",
-      "last_updated": "2025-07-13T14:50:25.172049+00:00"
+      "last_updated": "2025-07-13T14:51:00.786291+00:00"
     },
     {
       "title": "NC Joint Chiefs Project Coordinator",
@@ -6466,7 +6466,8 @@
       "contact_info": "",
       "scraped_at": "2025-07-13T14:45:51.888331+00:00",
       "scraper_version": "4.0-targeted",
-      "first_seen": "2025-07-13T14:47:11.244798+00:00"
+      "first_seen": "2025-07-13T14:47:11.244798+00:00",
+      "last_updated": "2025-07-13T14:51:00.786464+00:00"
     },
     {
       "title": "Environmental Education and Science Communication Fellows",
@@ -6774,7 +6775,8 @@
       "contact_info": "",
       "scraped_at": "2025-07-13T14:45:51.974665+00:00",
       "scraper_version": "4.0-targeted",
-      "first_seen": "2025-07-13T14:47:11.244810+00:00"
+      "first_seen": "2025-07-13T14:47:11.244810+00:00",
+      "last_updated": "2025-07-13T14:51:00.786471+00:00"
     },
     {
       "title": "MS position - impacts of global change drivers on dryland plant communities - Marshall U, Palmquist lab",
@@ -6796,7 +6798,8 @@
       "contact_info": "",
       "scraped_at": "2025-07-13T14:45:51.980907+00:00",
       "scraper_version": "4.0-targeted",
-      "first_seen": "2025-07-13T14:47:11.244811+00:00"
+      "first_seen": "2025-07-13T14:47:11.244811+00:00",
+      "last_updated": "2025-07-13T14:51:00.786476+00:00"
     },
     {
       "title": "Master's research assistantship: black bass conservation & ecology",
@@ -6818,7 +6821,8 @@
       "contact_info": "",
       "scraped_at": "2025-07-13T14:45:51.986951+00:00",
       "scraper_version": "4.0-targeted",
-      "first_seen": "2025-07-13T14:47:11.244811+00:00"
+      "first_seen": "2025-07-13T14:47:11.244811+00:00",
+      "last_updated": "2025-07-13T14:51:00.786480+00:00"
     },
     {
       "title": "Wildlife Rescue and Rehabilitation Technician Internship",
@@ -9767,6 +9771,28 @@
       "scraped_at": "2025-07-13T14:46:06.476680+00:00",
       "scraper_version": "4.0-targeted",
       "first_seen": "2025-07-13T14:47:11.245047+00:00"
+    },
+    {
+      "title": "Test PhD Assistantship in Wildlife Telemetry and Movement Ecology",
+      "organization": "Test University (State)",
+      "location": "Test City, NE",
+      "url": "https://jobs.rwfm.tamu.edu/view/999999/",
+      "job_id": "999999",
+      "salary_range": "$28,000 per year",
+      "starting_date": "January 2026",
+      "application_deadline": "12/15/2025",
+      "published_date": "07/13/2025",
+      "hours_per_week": "20",
+      "education_required": "Masters",
+      "experience_required": "2 years research experience",
+      "tags": [
+        "Graduate Opportunities"
+      ],
+      "description": "Test PhD Assistantship in Wildlife Telemetry and Movement Ecology\nTest University (State)\nApplication Deadline:\n12/15/2025\nPublished:\n07/13/2025\nStarting Date:\nJanuary 2026\nHours per Week:\n20\nSalary:\n$28,000 per year\nEducation Required:\nMasters\nExperience Required:\n2 years research experience\nLocation:\nTest City, NE\nTags:\nGraduate Opportunities\nJust posted\nOpen in New Window",
+      "contact_info": "Dr. Test Researcher, test@testuniversity.edu",
+      "scraped_at": "2025-07-13T14:51:30.000000+00:00",
+      "scraper_version": "4.0-targeted",
+      "first_seen": "2025-07-13T14:51:24.394515+00:00"
     }
   ]
 }

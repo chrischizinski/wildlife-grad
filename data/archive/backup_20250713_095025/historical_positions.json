@@ -1,13 +1,13 @@
 {
   "metadata": {
-    "merge_timestamp": "2025-07-13T14:50:25.172235+00:00",
+    "merge_timestamp": "2025-07-13T14:47:11.245049+00:00",
     "total_positions": 436,
     "merge_stats": {
-      "historical_preserved": 436,
-      "new_added": 0,
-      "updated": 1,
-      "enhanced": 0,
-      "preserved": 435
+      "historical_preserved": 233,
+      "new_added": 203,
+      "updated": 28,
+      "enhanced": 28,
+      "preserved": 205
     },
     "data_sources": [
       "historical_positions.json",
@@ -5805,8 +5805,7 @@
       "contact_info": "",
       "scraped_at": "2025-07-13T14:45:47.281280+00:00",
       "scraper_version": "4.0-targeted",
-      "first_seen": "2025-07-13T14:47:11.244773+00:00",
-      "last_updated": "2025-07-13T14:50:25.172049+00:00"
+      "first_seen": "2025-07-13T14:47:11.244773+00:00"
     },
     {
       "title": "NC Joint Chiefs Project Coordinator",

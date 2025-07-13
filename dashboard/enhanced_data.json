@@ -1,11 +1,11 @@
 {
-  "last_updated": "2025-07-06T06:39:47.556108",
+  "last_updated": "2025-07-11T10:27:46.210094",
   "total_positions": 43,
   "overview": {
     "total_disciplines": 4,
     "positions_with_salaries": 28,
     "graduate_positions": 43,
-    "recent_positions_30_days": 27
+    "recent_positions_30_days": 21
   },
   "discipline_analytics": {
     "Fisheries Management and Conservation": {
@@ -82,7 +82,7 @@
   "time_series": {
     "1_month": {
       "total_monthly": {
-        "2025-06": 24,
+        "2025-06": 18,
         "2025-07": 3
       },
       "discipline_monthly": {
@@ -90,17 +90,17 @@
           "2025-06": 1
         },
         "Wildlife Management and Conservation": {
-          "2025-06": 5
+          "2025-06": 4
         },
         "Other": {
           "2025-07": 3,
-          "2025-06": 17
+          "2025-06": 12
         },
         "Habitat and Environmental Science": {
           "2025-06": 1
         }
       },
-      "position_count": 27
+      "position_count": 21
     },
     "6_months": {
       "total_monthly": {
