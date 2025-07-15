@@ -17,12 +17,9 @@ This is a comprehensive platform for tracking and analyzing graduate assistantsh
 - `src/analysis/enhanced_dashboard_data.py` - Dashboard data generation with analytics
 - `tests/` - Unit tests for validation and quality assurance
 
-### 🌐 Interactive Dashboards  
-- `dashboard/pages/enhanced_index.html` - Job search dashboard with real-time filtering
+### 📊 Analytics Dashboard  
 - `dashboard/pages/analytics_dashboard.html` - Analytics & insights dashboard
-- `dashboard/assets/js/enhanced_dashboard.js` - Search interface logic (XSS-protected)
 - `dashboard/assets/js/analytics_dashboard.js` - Analytics logic (XSS-protected)
-- `dashboard/assets/css/enhanced-styles.css` - Modern responsive styles
 - `dashboard/assets/css/analytics-styles.css` - Clean CSS architecture (no !important)
 
 ### 💾 Data Storage
@@ -120,7 +117,7 @@ python src/analysis/enhanced_dashboard_data.py
 
 # Serve dashboard locally
 cd dashboard && python -m http.server 8080
-# Visit: http://localhost:8080/pages/enhanced_index.html
+# Visit: http://localhost:8080/pages/analytics_dashboard.html
 ```
 
 ## Project-Specific Guidelines
