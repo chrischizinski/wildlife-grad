@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-07-15T11:11:17.033343",
+  "last_updated": "2025-07-15T16:17:55.631377",
   "total_positions": 2,
   "overview": {
     "total_disciplines": 2,
@@ -8,8 +8,8 @@
     "recent_positions_30_days": 2
   },
   "scrape_info": {
-    "last_scraped": "2025-07-15T16:10:38.006944+00:00",
-    "scrape_run_id": "scrape_20250715_161009_fccacfe2",
+    "last_scraped": "2025-07-15T16:17:13.443525+00:00",
+    "scrape_run_id": "scrape_20250715_161625_89beb326",
     "scraper_version": "2.0",
     "positions_in_latest_scrape": 2
   },
