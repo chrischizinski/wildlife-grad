@@ -134,22 +134,6 @@ python -m http.server 8080
 
 ## 🔧 Configuration
 
-### Environment Variables (.env)
-```bash
-# Scraper Configuration
-JOB_SEARCH_URL="https://jobs.rwfm.tamu.edu/search/"
-SEARCH_KEYWORDS="(Master) OR (PhD) OR (Graduate)"
-OUTPUT_DIR="data"
-MIN_DELAY=2
-MAX_DELAY=5
-HEADLESS=true
-
-# Analysis Configuration
-ENABLE_ML_CLASSIFICATION=true
-COST_OF_LIVING_ADJUSTMENT=true
-HISTORICAL_TRACKING=true
-```
-
 ### Scraper Parameters
 ```python
 from wildlife_job_scraper import ScraperConfig, WildlifeJobScraper
