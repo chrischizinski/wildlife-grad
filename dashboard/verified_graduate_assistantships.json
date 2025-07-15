@@ -21,8 +21,8 @@
     "discipline_keywords": [],
     "is_big10_university": false,
     "university_name": "",
-    "scraped_at": "2025-07-15T13:50:07.168449+00:00",
-    "scrape_run_id": "scrape_20250715_134940_5b949768",
+    "scraped_at": "2025-07-15T15:43:51.458969+00:00",
+    "scrape_run_id": "scrape_20250715_154310_b422036c",
     "scraper_version": "2.0"
   },
   {
@@ -53,8 +53,8 @@
     ],
     "is_big10_university": false,
     "university_name": "",
-    "scraped_at": "2025-07-15T13:50:07.659363+00:00",
-    "scrape_run_id": "scrape_20250715_134940_5b949768",
+    "scraped_at": "2025-07-15T15:43:51.836957+00:00",
+    "scrape_run_id": "scrape_20250715_154310_b422036c",
     "scraper_version": "2.0"
   }
 ]
