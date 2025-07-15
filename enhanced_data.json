@@ -1,0 +1,129 @@
+{
+  "last_updated": "2025-07-15T16:17:55.631377",
+  "total_positions": 2,
+  "overview": {
+    "total_disciplines": 2,
+    "positions_with_salaries": 1,
+    "graduate_positions": 2,
+    "recent_positions_30_days": 2
+  },
+  "scrape_info": {
+    "last_scraped": "2025-07-15T16:17:13.443525+00:00",
+    "scrape_run_id": "scrape_20250715_161625_89beb326",
+    "scraper_version": "2.0",
+    "positions_in_latest_scrape": 2
+  },
+  "discipline_analytics": {
+    "Other": {
+      "total_positions": 1,
+      "salary_stats": {
+        "count": 1,
+        "mean": 26500.0,
+        "median": 26500.0,
+        "min": 26500.0,
+        "max": 26500.0,
+        "range": 0.0
+      },
+      "monthly_trends": {
+        "2025-07": 1
+      },
+      "grad_positions": 1
+    },
+    "Wildlife Management and Conservation": {
+      "total_positions": 1,
+      "salary_stats": {},
+      "monthly_trends": {
+        "2025-07": 1
+      },
+      "grad_positions": 1
+    }
+  },
+  "time_series": {
+    "1_month": {
+      "total_monthly": {
+        "2025-07": 2
+      },
+      "discipline_monthly": {
+        "Other": {
+          "2025-07": 1
+        },
+        "Wildlife Management and Conservation": {
+          "2025-07": 1
+        }
+      },
+      "position_count": 2
+    },
+    "6_months": {
+      "total_monthly": {
+        "2025-07": 2
+      },
+      "discipline_monthly": {
+        "Other": {
+          "2025-07": 1
+        },
+        "Wildlife Management and Conservation": {
+          "2025-07": 1
+        }
+      },
+      "position_count": 2
+    },
+    "1_year": {
+      "total_monthly": {
+        "2025-07": 2
+      },
+      "discipline_monthly": {
+        "Other": {
+          "2025-07": 1
+        },
+        "Wildlife Management and Conservation": {
+          "2025-07": 1
+        }
+      },
+      "position_count": 2
+    },
+    "all_time": {
+      "total_monthly": {
+        "2025-07": 2
+      },
+      "discipline_monthly": {
+        "Other": {
+          "2025-07": 1
+        },
+        "Wildlife Management and Conservation": {
+          "2025-07": 1
+        }
+      },
+      "position_count": 2
+    }
+  },
+  "top_disciplines": {
+    "Other": {
+      "total_positions": 1,
+      "salary_stats": {
+        "count": 1,
+        "mean": 26500.0,
+        "median": 26500.0,
+        "min": 26500.0,
+        "max": 26500.0,
+        "range": 0.0
+      },
+      "monthly_trends": {
+        "2025-07": 1
+      },
+      "grad_positions": 1
+    },
+    "Wildlife Management and Conservation": {
+      "total_positions": 1,
+      "salary_stats": {},
+      "monthly_trends": {
+        "2025-07": 1
+      },
+      "grad_positions": 1
+    }
+  },
+  "geographic_analytics": {},
+  "salary_overview": {
+    "positions_with_salary": 1,
+    "average_lincoln_adjusted": 26500.0
+  }
+}
