@@ -68,20 +68,27 @@ wildlife-grad/
 │   └── requirements.txt            # Python dependencies
 │
 ├── 📊 Analytics & Processing
-│   ├── scripts/
-│   │   ├── enhanced_analysis.py         # ML classification & analysis
-│   │   ├── enhanced_dashboard_data.py   # Dashboard data generation
-│   │   └── generate_dashboard_data.py   # Legacy data generation
+│   ├── src/
+│   │   ├── analysis/
+│   │   │   ├── enhanced_analysis.py         # ML classification & analysis
+│   │   │   └── enhanced_dashboard_data.py   # Dashboard data generation
+│   │   └── utils/
+│   │       └── server.py                    # Development server utilities
 │   └── tests/                      # Unit tests for validation
 │
 ├── 🌐 Interactive Dashboards
 │   ├── dashboard/
-│   │   ├── enhanced_index.html          # Job search dashboard
-│   │   ├── analytics_dashboard.html     # Analytics & insights dashboard
-│   │   ├── enhanced_dashboard.js        # Search interface logic
-│   │   ├── analytics_dashboard.js       # Analytics logic (XSS-protected)
-│   │   ├── enhanced-styles.css          # Modern responsive styles
-│   │   └── analytics-styles.css         # Clean CSS (no !important)
+│   │   ├── pages/
+│   │   │   ├── enhanced_index.html          # Job search dashboard
+│   │   │   └── analytics_dashboard.html     # Analytics & insights dashboard
+│   │   ├── assets/
+│   │   │   ├── js/
+│   │   │   │   ├── enhanced_dashboard.js        # Search interface logic
+│   │   │   │   └── analytics_dashboard.js       # Analytics logic (XSS-protected)
+│   │   │   └── css/
+│   │   │       ├── enhanced-styles.css          # Modern responsive styles
+│   │   │       └── analytics-styles.css         # Clean CSS (no !important)
+│   │   └── data/                            # Dashboard data files
 │
 ├── 💾 Data Storage
 │   ├── data/
@@ -348,7 +355,7 @@ python -m http.server 8080  # Serves with proper headers
 **3. Classification Accuracy Issues**
 ```bash
 # Retrain models with additional samples
-python scripts/enhanced_analysis.py --retrain
+python src/analysis/enhanced_analysis.py --retrain
 ```
 
 **4. Dashboard Not Loading**

@@ -13,7 +13,7 @@ def start_server():
         try:
             with socketserver.TCPServer(("", port), http.server.SimpleHTTPRequestHandler) as httpd:
                 print(f"Server started at http://localhost:{port}")
-                print(f"Dashboard available at http://localhost:{port}/enhanced_index.html")
+                print(f"Dashboard available at http://localhost:{port}/pages/enhanced_index.html")
                 print("Press Ctrl+C to stop the server")
                 httpd.serve_forever()
         except OSError:

@@ -18,7 +18,7 @@ def load_verified_graduate_data() -> List[Dict]:
     Uses ML-classified data from verified_graduate_assistantships.json
     instead of keyword-filtered historical data for accuracy.
     """
-    verified_file = Path("data/verified_graduate_assistantships.json")
+    verified_file = Path("data/processed/verified_graduate_assistantships.json")
     if verified_file.exists():
         with open(verified_file, 'r', encoding='utf-8') as f:
             return json.load(f)

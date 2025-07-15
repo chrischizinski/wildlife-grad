@@ -13,18 +13,17 @@ This is a comprehensive platform for tracking and analyzing graduate assistantsh
 - `requirements.txt` - Python dependencies (selenium, pydantic, etc.)
 
 ### 📊 Analytics & Processing
-- `scripts/enhanced_analysis.py` - ML classification using TF-IDF + cosine similarity
-- `scripts/enhanced_dashboard_data.py` - Dashboard data generation with analytics
-- `scripts/generate_dashboard_data.py` - Legacy data generation (preserved)
+- `src/analysis/enhanced_analysis.py` - ML classification using TF-IDF + cosine similarity
+- `src/analysis/enhanced_dashboard_data.py` - Dashboard data generation with analytics
 - `tests/` - Unit tests for validation and quality assurance
 
 ### 🌐 Interactive Dashboards  
-- `dashboard/enhanced_index.html` - Job search dashboard with real-time filtering
-- `dashboard/analytics_dashboard.html` - Analytics & insights dashboard
-- `dashboard/enhanced_dashboard.js` - Search interface logic (XSS-protected)
-- `dashboard/analytics_dashboard.js` - Analytics logic (XSS-protected)
-- `dashboard/enhanced-styles.css` - Modern responsive styles
-- `dashboard/analytics-styles.css` - Clean CSS architecture (no !important)
+- `dashboard/pages/enhanced_index.html` - Job search dashboard with real-time filtering
+- `dashboard/pages/analytics_dashboard.html` - Analytics & insights dashboard
+- `dashboard/assets/js/enhanced_dashboard.js` - Search interface logic (XSS-protected)
+- `dashboard/assets/js/analytics_dashboard.js` - Analytics logic (XSS-protected)
+- `dashboard/assets/css/enhanced-styles.css` - Modern responsive styles
+- `dashboard/assets/css/analytics-styles.css` - Clean CSS architecture (no !important)
 
 ### 💾 Data Storage
 - `data/verified_graduate_assistantships.json` - Current verified positions
@@ -114,14 +113,14 @@ This is a comprehensive platform for tracking and analyzing graduate assistantsh
 python wildlife_job_scraper.py
 
 # Generate analytics
-python scripts/enhanced_analysis.py
+python src/analysis/enhanced_analysis.py
 
 # Create dashboard data
-python scripts/enhanced_dashboard_data.py
+python src/analysis/enhanced_dashboard_data.py
 
 # Serve dashboard locally
 cd dashboard && python -m http.server 8080
-# Visit: http://localhost:8080/enhanced_index.html
+# Visit: http://localhost:8080/pages/enhanced_index.html
 ```
 
 ## Project-Specific Guidelines

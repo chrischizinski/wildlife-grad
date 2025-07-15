@@ -42,7 +42,7 @@ class ScraperConfig:
     base_url: str = "https://jobs.rwfm.tamu.edu/search/"
     keywords: str = "(Master) OR (PhD) OR (Graduate)"
     date_filter: str = "Last7Days"  # Options: Anytime, Last30Days, Last14Days, Last7Days, Last48Hours
-    output_dir: Path = Path("data")
+    output_dir: Path = Path("data/raw")
     log_file: str = "scrape_jobs.log"
     page_size: int = 50
     min_delay: float = 2.0
@@ -1200,8 +1200,21 @@ class WildlifeJobScraper:
         self.logger.info(f"  Graduate positions (confidence >= {min_confidence}): {len(graduate_jobs)}")
         
         # Save graduate positions
-        json_path = self.save_jobs_json(graduate_jobs, "verified_graduate_assistantships.json")
-        csv_path = self.save_jobs_csv(graduate_jobs, "verified_graduate_assistantships.csv")
+        # Save to processed directory
+        processed_dir = Path("data/processed")
+        processed_dir.mkdir(exist_ok=True)
+        json_path = processed_dir / "verified_graduate_assistantships.json"
+        
+        # Convert to dictionaries for JSON serialization
+        jobs_data = [job.dict() for job in graduate_jobs]
+        
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(jobs_data, f, indent=2, ensure_ascii=False)
+        # Save CSV to processed directory
+        csv_path = processed_dir / "verified_graduate_assistantships.csv"
+        jobs_data = [job.dict() for job in graduate_jobs]
+        df = pd.DataFrame(jobs_data)
+        df.to_csv(csv_path, index=False, encoding="utf-8")
         
         # Also save classification report
         report = {
@@ -1219,7 +1232,7 @@ class WildlifeJobScraper:
                 report["classification_breakdown"][pos_type] = 0
             report["classification_breakdown"][pos_type] += 1
         
-        report_path = self.config.output_dir / "classification_report.json"
+        report_path = processed_dir / "classification_report.json"
         with open(report_path, "w", encoding="utf-8") as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
             

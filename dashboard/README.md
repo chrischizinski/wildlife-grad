@@ -40,15 +40,19 @@ The enhanced dashboard transforms your static analytics view into a **powerful, 
 
 ```
 dashboard/
-├── enhanced_index.html          # Job search dashboard with real-time filtering
-├── analytics_dashboard.html     # Analytics & insights dashboard
-├── enhanced_dashboard.js        # Search interface logic (XSS-protected)
-├── analytics_dashboard.js       # Analytics logic (XSS-protected)
-├── enhanced-styles.css          # Modern responsive styles
-├── analytics-styles.css         # Clean CSS architecture (no !important)
-├── index.html                  # Legacy dashboard (preserved)
-├── dashboard.js                # Legacy JavaScript (preserved)
-└── README.md                   # This documentation
+├── pages/
+│   ├── enhanced_index.html          # Job search dashboard with real-time filtering
+│   └── analytics_dashboard.html     # Analytics & insights dashboard
+├── assets/
+│   ├── js/
+│   │   ├── enhanced_dashboard.js    # Search interface logic (XSS-protected)
+│   │   └── analytics_dashboard.js   # Analytics logic (XSS-protected)
+│   └── css/
+│       ├── enhanced-styles.css      # Modern responsive styles
+│       └── analytics-styles.css     # Clean CSS architecture (no !important)
+├── data/                           # Dashboard data files
+├── index.html                      # Main entry point with redirect
+└── README.md                       # This documentation
 ```
 
 ## 🚦 Quick Start
@@ -57,13 +61,13 @@ dashboard/
 ```bash
 cd dashboard
 python3 -m http.server 8080
-# Visit: http://localhost:8080/enhanced_index.html
+# Visit: http://localhost:8080/pages/enhanced_index.html
 ```
 
 ### Option 2: GitHub Pages Deployment
 Simply push to GitHub and access via your Pages URL:
 ```
-https://username.github.io/repository-name/enhanced_index.html
+https://username.github.io/repository-name/pages/enhanced_index.html
 ```
 
 ## 🎯 User Experience Features
@@ -250,7 +254,7 @@ class DataManager {
 ### **Development Setup**
 1. Clone the repository
 2. Serve files locally: `python3 -m http.server 8080`
-3. Open `enhanced_index.html` in your browser
+3. Open `pages/enhanced_index.html` in your browser
 4. Make changes and test across devices
 
 ### **Code Style**

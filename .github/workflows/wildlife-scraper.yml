@@ -10,7 +10,7 @@ on:
     paths: 
       - 'dashboard/**'
       - 'wildlife_job_scraper.py'
-      - 'scripts/**'
+      - 'src/**'
 
 jobs:
   enhanced-pipeline-and-deploy:
@@ -71,8 +71,8 @@ jobs:
         echo "2) Running ML-powered enhanced analysis"
         echo "3) Generating dashboard data with analytics"
         python wildlife_job_scraper.py
-        python scripts/enhanced_analysis.py
-        python scripts/enhanced_dashboard_data.py
+        python src/analysis/enhanced_analysis.py
+        python src/analysis/enhanced_dashboard_data.py
         echo "Enhanced data pipeline completed successfully"
         
     - name: 📋 Copy data to dashboard directory

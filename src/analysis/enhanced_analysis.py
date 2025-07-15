@@ -863,7 +863,7 @@ class EnhancedAnalyzer:
 def main():
     """Main function to run enhanced analysis."""
     # Load current job data
-    data_file = Path("data/verified_graduate_assistantships.json")
+    data_file = Path("data/processed/verified_graduate_assistantships.json")
     if not data_file.exists():
         print("No verified graduate assistantships data found. Run the scraper first.")
         return
@@ -876,7 +876,7 @@ def main():
     results = analyzer.analyze_positions(current_positions)
     
     # Save enhanced results
-    output_file = Path("data/enhanced_analysis.json")
+    output_file = Path("data/processed/enhanced_analysis.json")
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(results, f, indent=2, ensure_ascii=False)
     
