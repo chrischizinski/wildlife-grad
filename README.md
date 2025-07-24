@@ -8,7 +8,7 @@
 
 A comprehensive platform for tracking and analyzing graduate assistantship opportunities in wildlife, fisheries, and natural resources. Features automated web scraping, machine learning classification, historical data tracking, and interactive analytics dashboards.
 
-**🔗 [View Live Dashboard](https://chrischizinski.github.io/wildlife-grad/)** | **📊 [Analytics Dashboard](https://chrischizinski.github.io/wildlife-grad/analytics_dashboard.html)**
+**📊 [View Live Analytics Dashboard](https://chrischizinski.github.io/wildlife-grad/)**
 
 ## 🚀 Project Status
 
@@ -46,11 +46,11 @@ A comprehensive platform for tracking and analyzing graduate assistantship oppor
 - **Advanced Salary Analysis**: Handles ranges, monthly→annual, k-suffix notation
 - **Historical Tracking**: Deduplication with first_seen/last_updated timestamps
 
-### 📊 **Interactive Dashboards**
-- **Dual Dashboard System**: Enhanced search interface + Analytics dashboard
-- **Real-time Filtering**: By discipline, location, salary, keywords
-- **Professional Visualizations**: Chart.js and Plotly with responsive design
-- **Export Capabilities**: JSON/CSV download with filtered results
+### 📊 **Analytics Dashboard**
+- **Comprehensive Analytics**: Graduate assistantship trends, salary analysis, and market insights
+- **Interactive Visualizations**: Chart.js and Plotly with responsive design
+- **Big 10 University Filter**: Focus on positions at major research institutions
+- **Export Capabilities**: JSON/CSV download with complete datasets
 - **Mobile-Optimized**: Responsive design for all devices
 
 ### 🔒 **Enterprise-Grade Security**
@@ -76,17 +76,14 @@ wildlife-grad/
 │   │       └── server.py                    # Development server utilities
 │   └── tests/                      # Unit tests for validation
 │
-├── 🌐 Interactive Dashboards
+├── 📊 Analytics Dashboard
 │   ├── dashboard/
 │   │   ├── pages/
-│   │   │   ├── enhanced_index.html          # Job search dashboard
 │   │   │   └── analytics_dashboard.html     # Analytics & insights dashboard
 │   │   ├── assets/
 │   │   │   ├── js/
-│   │   │   │   ├── enhanced_dashboard.js        # Search interface logic
 │   │   │   │   └── analytics_dashboard.js       # Analytics logic (XSS-protected)
 │   │   │   └── css/
-│   │   │       ├── enhanced-styles.css          # Modern responsive styles
 │   │   │       └── analytics-styles.css         # Clean CSS (no !important)
 │   │   └── data/                            # Dashboard data files
 │

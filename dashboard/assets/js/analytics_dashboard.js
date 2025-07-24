@@ -167,15 +167,15 @@ class AnalyticsDashboard {
         try {
             const [jobsResponse, analyticsResponse] = await Promise.all([
                 // Try verified graduate assistantships first, fallback to export_data
-                fetch('verified_graduate_assistantships.json' + cacheBuster).catch(() => 
-                    fetch('./verified_graduate_assistantships.json' + cacheBuster)
+                fetch('data/verified_graduate_assistantships.json' + cacheBuster).catch(() => 
+                    fetch('./data/verified_graduate_assistantships.json' + cacheBuster)
                 ).catch(() =>
-                    fetch('export_data.json' + cacheBuster).catch(() => 
-                        fetch('./export_data.json' + cacheBuster)
+                    fetch('data/export_data.json' + cacheBuster).catch(() => 
+                        fetch('./data/export_data.json' + cacheBuster)
                     )
                 ),
-                fetch('enhanced_data.json' + cacheBuster).catch(() => 
-                    fetch('./enhanced_data.json' + cacheBuster)
+                fetch('data/enhanced_data.json' + cacheBuster).catch(() => 
+                    fetch('./data/enhanced_data.json' + cacheBuster)
                 )
             ]);
             
@@ -431,7 +431,7 @@ class AnalyticsDashboard {
             : 0;
         
         document.getElementById('avg-stipend').textContent = 
-            (avgStipend && avgStipend > 0) ? `$${avgStipend.toLocaleString()}` : 'N/A';
+            (avgStipend && avgStipend > 0 && typeof avgStipend === 'number') ? `$${avgStipend.toLocaleString()}` : 'N/A';
         
         // Top discipline
         const disciplineCounts = {};

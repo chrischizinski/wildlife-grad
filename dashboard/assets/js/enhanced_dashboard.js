@@ -40,11 +40,11 @@ async function initDashboard() {
         try {
             // Load both enhanced data and export data
             const [enhancedResponse, exportResponse] = await Promise.all([
-                fetch('../data/enhanced_data.json').catch(() => {
+                fetch('data/enhanced_data.json').catch(() => {
                     console.log('Trying to load enhanced_data.json from data directory');
                     return fetch('./data/enhanced_data.json');
                 }),
-                fetch('../data/export_data.json').catch(() => {
+                fetch('data/export_data.json').catch(() => {
                     console.log('Trying to load export_data.json from data directory');
                     return fetch('./data/export_data.json');
                 })
