@@ -1,29 +1,56 @@
-name: Deploy Wildlife Dashboard
+name: Dashboard Deployment
 
 on:
-  workflow_dispatch:
   push:
     branches: [ main ]
-    paths: ['dashboard/**']
+    paths:
+      - 'dashboard/**'
+      - 'data/**'
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     
-    permissions:
-      contents: write
-    
     steps:
-    - name: Checkout
+    - name: Checkout code
       uses: actions/checkout@v4
-    
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v4
+      
+    - name: Copy data to dashboard directory
+      run: |
+        # Ensure dashboard/data directory exists
+        mkdir -p dashboard/data
+        
+        # Copy data files to dashboard directory for deployment
+        if [ -f "data/enhanced_data.json" ]; then
+          cp data/enhanced_data.json dashboard/data/
+        fi
+        if [ -f "data/historical_positions.json" ]; then
+          cp data/historical_positions.json dashboard/data/
+        fi
+        if [ -f "data/processed/verified_graduate_assistantships.json" ]; then
+          cp data/processed/verified_graduate_assistantships.json dashboard/data/
+        fi
+        
+    - name: Setup GitHub Pages
+      uses: actions/configure-pages@v3
+      
+    - name: Upload Pages artifact
+      uses: actions/upload-pages-artifact@v2
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dashboard
-        publish_branch: gh-pages
-        force_orphan: true
-        user_name: 'Dashboard Bot'
-        user_email: 'action@github.com'
-        commit_message: 'Deploy dashboard - ${{ github.sha }}'
+        path: ./dashboard
+        
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2
+
+# Permissions needed for GitHub Pages deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
