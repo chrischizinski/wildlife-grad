@@ -6,7 +6,7 @@ on:
     - cron: '0 9 * * 1'
   workflow_dispatch: # Allow manual trigger
   push:
-    branches: [ main ]
+    branches: [ main, add-github-workflows ]
     paths:
       - 'wildlife_job_scraper.py'
       - 'scripts/populate_supabase.py'
